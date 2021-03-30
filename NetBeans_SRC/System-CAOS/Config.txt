@@ -1,0 +1,15 @@
+# Configuracion de Systema CAOS
+
+# Contador de Actividad
+# La siguiente actividad adquirira el valor actual+1
+Actividad(0)
+
+# Contador de Archivos de Historial
+# Si el valor es 0, se crea un nuevo archivo de History por default
+# Ruta por default de los archivos  /History/Data_0.caos
+History(0)
+
+
+# Periodo de Trabajo Activo
+# Si hay un periodo de Trbajao activo TRUE, otro caso FALSE
+Periodo(FALSE)
