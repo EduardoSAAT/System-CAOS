@@ -2,14 +2,14 @@
 
 # Contador de Actividad
 # La siguiente actividad adquirira el valor actual+1
-Actividad(0)
+Actividad(1)
 
-# Contador de Archivos de Historial
+# Contador del Ultimo Archivo de History
 # Si el valor es 0, se crea un nuevo archivo de History por default
-# Ruta por default de los archivos  /History/Data_0.caos
-History(0)
+# Ruta por default de los archivos  /History/History_1.caos
+History(1)
 
 
 # Periodo de Trabajo Activo
 # Si hay un periodo de Trbajao activo TRUE, otro caso FALSE
-Periodo(FALSE)
+Periodo(false)

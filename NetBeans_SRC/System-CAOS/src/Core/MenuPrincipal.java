@@ -3,19 +3,48 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package system;
+package Core;
+
+import java.awt.Image;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import Core.Tablero;
+
 
 /**
  *
  * @author Ing Lalux
  */
 public class MenuPrincipal extends javax.swing.JFrame {
+    
+    //Variables del Tablero
+    public static Tablero MenuTablero;
+    
+    
 
+    public MenuPrincipal(){
+        initComponents();
+    }
+    
+    
     /**
      * Creates new form MenuPrincipal
      */
-    public MenuPrincipal() {
+    public MenuPrincipal(boolean periodoActivo) {
         initComponents();
+        
+        //Agregar la imagen del Systema
+        ImageIcon img = new ImageIcon("Technotitlan.jpg");
+        Icon icono = new ImageIcon(img.getImage().getScaledInstance(labelImage.getWidth(),labelImage.getHeight(),Image.SCALE_DEFAULT));
+        labelImage.setIcon(icono);
+        this.repaint();
+        
+        //Configurar los botones deacuerdo al Periodo de Trabajo
+        if(periodoActivo==true){
+            botonCrear.setEnabled(false);
+        }else{
+            botonReport.setEnabled(false);
+        }
     }
 
     /**
@@ -28,7 +57,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        Imagen = new javax.swing.JLabel();
+        labelImage = new javax.swing.JLabel();
         botonCrear = new javax.swing.JButton();
         botonReport = new javax.swing.JButton();
 
@@ -37,6 +66,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
         jLabel1.setText("System - CAOS");
 
         botonCrear.setText("Crear Bloque Trabajo");
+        botonCrear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonCrearActionPerformed(evt);
+            }
+        });
 
         botonReport.setText("Report Bloque Trabajo");
 
@@ -47,7 +81,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Imagen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(labelImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
@@ -62,7 +96,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Imagen, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
+                .addComponent(labelImage, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(botonCrear, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -72,6 +106,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void botonCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCrearActionPerformed
+        //Crear el nuevo tablero
+        MenuTablero = new Tablero(Principal.PeriodoActivo);
+        MenuTablero.setVisible(true);
+        
+    }//GEN-LAST:event_botonCrearActionPerformed
 
     /**
      * @param args the command line arguments
@@ -109,9 +150,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel Imagen;
     private javax.swing.JButton botonCrear;
     private javax.swing.JButton botonReport;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel labelImage;
     // End of variables declaration//GEN-END:variables
 }

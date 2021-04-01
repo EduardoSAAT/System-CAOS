@@ -3,30 +3,35 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package System;
+package Core;
 import Algoritms.Cad;
 import Archivos.*;
 import Data.DataController;
-import system.Tablero;
+import Core.Tablero;
 import Graphic.ErrorCatcher;
 
 /**
  *
  * @author Ing Lalux
  */
-public class Main {
+public class Principal {
     //Sistema de control de errores//
     public static ErrorCatcher ErrorController;
     
     //Ruta de los archivos del Sistema
     public static String configFile = "Config.txt";
-    public static String rutaHistory = "History";
+    public static String rutaHistory = "History/";
     public static String nameHistoryFiles="History_";
     public static int numHistory=-1;
     public static int numActivity=-1;
+    public static boolean PeriodoActivo=false;
     
     //Variables del controlador de Datos
     public static Data.DataController DataControll;
+    
+    
+    //Variables del MenuPrincipal
+    public static Core.MenuPrincipal MenuP;
     
     
     
@@ -37,8 +42,9 @@ public class Main {
         ErrorController = new ErrorCatcher();
         
         if(Inicializar()==true){
-            //t = new Tablero();
-            //t.setVisible(true);
+            //Abrir el menu principal
+            MenuP = new Core.MenuPrincipal(PeriodoActivo);
+            MenuP.setVisible(true);
         }else{
             ErrorController.showError();
         }
@@ -56,7 +62,7 @@ public class Main {
     //Variables Locales e Inicializacion//
         boolean condiciones=true;
 	String motivo="Indeterminado";
-        boolean salida = false;
+        boolean salida = true;
     //Comprobar Condiciones Iniciales//
 	//no hay condiciones Iniciales
 	//Comenzar Proceso//
@@ -68,6 +74,7 @@ public class Main {
             
             //Inicializar el Controlador de Datos//
                 DataControll = new DataController();
+                DataControll.InicializarController();
 	}else{
             System.out.println("ERROR en Inicializar, motivo: "+motivo+", valor regresado: "+salida);
 	}
@@ -107,6 +114,15 @@ public class Main {
             line = archivo.getLineLike("#Actividad#(#)#","#");
             line = Cad.subCadCadACadB(line,"(",")");
             numActivity = Cad.aEntero(line,-1);
+            
+            //Cargar el periodo//
+            line = archivo.getLineLike("#Periodo#(#)#","#");
+            line = Cad.subCadCadACadB(line,"(",")");
+            if(Cad.Equals(line,"TRUE",true)){
+                PeriodoActivo=true;
+            }else{
+                PeriodoActivo=false;
+            }
             
             //Comprobar proceso//
             if (numHistory != -1  &&  numActivity != -1){
