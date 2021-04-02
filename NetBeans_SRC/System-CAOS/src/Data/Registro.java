@@ -25,8 +25,10 @@ public class Registro implements Serializable{
     // CBP()  - Cantidad de beneficio potencial medido en pesos/horas_trabajo  ejm 150/h  de trabajo activo, no pasivo
     // PBP()  - Plazo para percibir efectos del beneficio potencial esperado, Corto=dias,meses  Mediano=varios meses, Largo=muchos meses, incluso años
     // RBP()  - Tipo de retorno de beneficio potencial, recurrente o no recurrente YES o NO
+    // ACT()  - Nombre de la actividad
+    // STAT() - Estado en el Periodo Actual  true Activo   false pasivo
     //
-    // A(Personal)ID(100)FF(1/1/2030)P(ALTA)Tmax(60)Tuse(30)%(50)PBP(Largo)RBP(YES)CBP(100)ACT(Trabajar mas)
+    // A(Personal)ID(100)FF(1/1/2030)P(ALTA)Tmax(60)Tuse(30)%(50)PBP(Largo)RBP(YES)CBP(100)ACT(Trabajar mas)STAT(false)
     public TreeString[] arboles;
     public int sizeTrees;
 
@@ -56,8 +58,8 @@ public class Registro implements Serializable{
             arboles = new TreeString[sizeTrees];
             
             //Construir arbol
-            TreeString a1 = new TreeString("Prueba","Raiz");
-            a1.addSon("R","A(Prueba)ID(1)FF(1/1/2030)P(ALTA)Tmax(60)Tuse(30)%(50)PBP(Largo)RBP(YES)CBP(100)ACT(Actividad Prueba)");
+            TreeString a1 = new TreeString("Prueba","Prueba");
+            a1.addSon("R","A(Prueba)ID(1)FF(1/1/2030)P(ALTA)Tmax(60)Tuse(30)%(50)PBP(Largo)RBP(YES)CBP(100)ACT(Actividad Prueba)STAT(false)");
             arboles[0] = a1;
                 
                 System.out.println("----------- Primer Registro Creado -------------");
@@ -82,6 +84,65 @@ public class Registro implements Serializable{
             System.out.println("Proceso CrearPrimerRegistro Terminado con FALLO");
     	}
     }
+    
+    
+    
+    
+    
+    /**
+     * Descripcion: Crear un Arbol en este Registro
+     *
+     * @param   ID Nombre del identificador del Arbol
+     * @param   NameRaiz  Nombre de la Raiz del Arbol
+     */
+    public void Crear_Arbol(String ID, String NameRaiz){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+            //no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Aumentar el tamaño de los Arboles
+            sizeTrees=sizeTrees+1;
+            TreeString[] temp = new TreeString[sizeTrees];
+            //Pasar todos los arboles viejos al nuevo
+                for(int i=0; i<sizeTrees-1; i++){
+                    temp[i] = arboles[i].Clone();
+                }
+            
+            
+            //Meter el nuevo Arbol
+            TreeString a1 = new TreeString(ID,NameRaiz);
+            temp[sizeTrees-1] = a1.Clone();
+                
+            System.out.println("----------- Estructura de Arboles Final -------------");
+            
+            for(int i=0; i<sizeTrees; i++){
+                temp[i].showTree();
+                System.out.println("\n");
+            }
+            System.out.println("\n");
+            
+            
+            //Cambiar la estructura de arboles vieja por la nueva
+            arboles = temp.clone();
+            
+            
+            //Cargar lo nuevos Datos
+            Cargar_AreasWork();
+            Cargar_Actividades();
+        }else{
+            System.out.println("ERROR en Crear_Arbol, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso Crear_Arbol Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso Crear_Arbol Terminado con FALLO");
+    	}
+    }
+    
     
     
     
@@ -110,6 +171,95 @@ public class Registro implements Serializable{
             System.out.println("Proceso Cargar_AreasWork Terminado con EXITO");
     	}else{
             System.out.println("Proceso Cargar_AreasWork Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+    /**
+     * Descripcion: Editar el nombre de un Arbol
+     *
+     * @param oldName  Nombre viejo del Arbol por ID
+     * @param newName  Nombre nuevo del Arbol por ID
+     */
+    public void EditaName_Arbol(String oldName, String newName){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+    int posArbol = pos_ArbolID(oldName);
+    if(posArbol==-1){
+        condiciones=false;
+        motivo="Arbol con ID: "+oldName+" no encontrado!";
+    }
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Modificar el Arbol
+            arboles[posArbol].IdArbol = newName;
+            arboles[posArbol].remplazeNode("R", newName);
+            
+            //Recargar Variables
+            Cargar_AreasWork();
+            reloadActALL_Area(newName);
+        }else{
+            System.out.println("ERROR en EditaName_Arbol, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso EditaName_Arbol Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso EditaName_Arbol Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+     /**
+     * Descripcion: Eliminar un Arbol del Regisro
+     *
+     * @param nameID  Nombre del Arbol a Eliminar
+     */
+    public void EliminaArbol(String nameID){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+    int posArbol = pos_ArbolID(nameID);
+    if(posArbol==-1){
+        condiciones=false;
+        motivo="Arbol con ID: "+nameID+" no encontrado!";
+    }
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Crear una nueva coleccion de arboles reducida de tamaño
+            sizeTrees=sizeTrees-1;
+            TreeString[] arbolesTemp = new TreeString[sizeTrees];
+            
+            //Pasar los elementos del arbol original al arbol temporal, ignorando el Borrado
+            int posTemp=0;
+            for(int i=0; i<sizeTrees+1; i++){
+                if(arboles[i].IdArbol.equals(nameID)){
+                    //Ignorar esta posicion
+                }else{
+                    arbolesTemp[posTemp] = arboles[i].Clone();
+                    posTemp=posTemp+1;
+                }
+            }
+            
+            //Cambiar el nuevo arbol por el viejo
+            arboles= arbolesTemp.clone();
+            
+            //Recargar Variables
+            Cargar_AreasWork();
+            Cargar_Actividades();
+        }else{
+            System.out.println("ERROR en Elimina_Arbol, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso Elimina_Arbol Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso Elimina_Arbol Terminado con FALLO");
     	}
     }
     
@@ -151,6 +301,64 @@ public class Registro implements Serializable{
             System.out.println("Proceso Cargar_Actividades Terminado con EXITO");
     	}else{
             System.out.println("Proceso Cargar_Actividades Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+    /**
+     * Descripcion: Actualizar el nombre del Arbol a que pertenece cada actividad
+     *
+     * @param nameIDArbol Nombre del ID del Arbol a actualizar actividades
+     */
+    public void reloadActALL_Area(String nameIDArbol){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+        int posArbol=-1;
+    //Comprobar Condiciones Iniciales//
+    if(Cad.isNulloVacia(nameIDArbol)){
+        condiciones=false;
+        motivo="Nombre ID de arbol null o vacio";
+    }else{
+        posArbol = pos_ArbolID(nameIDArbol);
+        
+        if(posArbol==-1){
+            condiciones=false;
+            motivo="ID del Arbol no existe";
+        }
+    }
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Crear el nuevo arboly modificarlo
+            TreeString arbolTemp = arboles[posArbol].Clone();
+            String rutaElement=null;
+            do {    
+                //Buscar cualquier elemento que tenga Actividades, para ser modificado
+                rutaElement = arbolTemp.getRutaElementLike("#A("+nameIDArbol+")#", "#");
+                
+                if(rutaElement!=null){
+                    //Obtener el Valor del Elemento a modificar//
+                    String value = arbolTemp.getElement(rutaElement, "ERROR en getElemento");
+                    
+                    //Modificar el Elemento//
+                    String newValor = Cad.remplazarSubcad_CadACadB(value,"A(",")",nameIDArbol);
+                    
+                    //Guardar el elemento modificado//
+                    arbolTemp.remplazeNode(rutaElement, newValor);
+                }
+            } while (rutaElement!=null);
+            
+            //Enviar el nuevo arbol en la posicion del anterior
+            arboles[posArbol] = arbolTemp.Clone();
+        }else{
+            System.out.println("ERROR en reloadActALL_Area, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso reloadActALL_Area Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso reloadActALL_Area Terminado con FALLO");
     	}
     }
     
@@ -239,6 +447,38 @@ public class Registro implements Serializable{
     //Terminar Proceso//
         return salida;
     }
+    
+    
+    
+     /**
+     * Descripcion: Obtener la posicion de un Arbol basado en su ID
+     *
+     * @param	ID Nombre del identificador del Arbol
+     * @return	-1 ERROR otro caso de 0 a sizeTrees-1
+     */
+    public int pos_ArbolID (String ID){
+    //Variables Locales e Inicializacion//
+        boolean condiciones=true;
+	String motivo="Indeterminado";
+        int salida=-1;
+    //Comprobar Condiciones Iniciales//
+	//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            for(int i=0; i<sizeTrees; i++){
+                if(Cad.Equals(arboles[i].IdArbol,ID, false)){
+                    salida=i;
+                    i=sizeTrees;
+                }
+            }
+	}else{
+            System.out.println("ERROR en pos_ArbolID, motivo: "+motivo+", valor regresado: "+salida);
+	}
+    //Terminar Proceso//
+        return salida;
+    }
+    
+    
     
     
 }

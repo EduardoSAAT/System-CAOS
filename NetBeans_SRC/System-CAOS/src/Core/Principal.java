@@ -22,8 +22,8 @@ public class Principal {
     public static String configFile = "Config.txt";
     public static String rutaHistory = "History/";
     public static String nameHistoryFiles="History_";
-    public static int numHistory=-1;
-    public static int numActivity=-1;
+    public static int numHistory=0;
+    public static int numActivity=0;
     public static boolean PeriodoActivo=false;
     
     //Variables del controlador de Datos

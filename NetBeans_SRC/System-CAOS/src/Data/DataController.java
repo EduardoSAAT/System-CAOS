@@ -205,7 +205,6 @@ public class DataController {
 	//Comenzar Proceso//
         if(condiciones==true){
             //Crear la coleccion de Registros
-            Principal.numHistory=1;
             sizeHistory=1;
             AllHistory = new Registro[sizeHistory];
             
@@ -233,6 +232,116 @@ public class DataController {
     
     
     /**
+     * Descripcion: Crear un Arbol en el Registro Actual
+     *
+     */
+    public void crearActual_Arbol(String nameArbol){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+		//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Pedir al registro actual que cree un nuevo Arbol
+            AllHistory[sizeHistory-1].Crear_Arbol(nameArbol, nameArbol);
+        }else{
+            System.out.println("ERROR en crearActual_Arbol, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso crearActual_Arbol Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso crearActual_Arbol  Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+    /**
+     * Descripcion: Editar el nombre de
+     *
+     * @param oldName Viejo nombre a Editar ID
+     * @param newName Nuevo nombre a poner
+     */
+    public void editaNameActual_Arbol(String oldName, String newName){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+		//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Pedir al registro actual
+            AllHistory[sizeHistory-1].EditaName_Arbol(oldName, newName);
+        }else{
+            System.out.println("ERROR en editaNameActual_Arbol, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso editaNameActual_Arbol Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso editaNameActual_Arbol  Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+    
+    /**
+     * Descripcion: Eliminar un Arbol del Registro Actual
+     *
+     * @param nameID Nombre del Arbol a eliminar por ID
+     */
+    public void eliminaActual_Arbol(String nameID){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+		//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Pedir al registro actual
+            AllHistory[sizeHistory-1].EliminaArbol(nameID);
+        }else{
+            System.out.println("ERROR en eliminaActual_Arbol, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso eliminaActual_Arbol Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso eliminaActual_Arbol Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+     /**
+     * Descripcion: Obtener la posicion de un Arbol del Registro Actual basado en su ID
+     *
+     * @param	ID Nombre del identificador del Arbol
+     * @return	-1 ERROR otro caso de 0 a sizeTrees-1
+     */
+    public int posActual_ArbolID (String ID){
+    //Variables Locales e Inicializacion//
+        boolean condiciones=true;
+	String motivo="Indeterminado";
+        int salida=-1;
+    //Comprobar Condiciones Iniciales//
+	//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            salida=AllHistory[sizeHistory-1].pos_ArbolID(ID);
+	}else{
+            System.out.println("ERROR en posActual_ArbolID, motivo: "+motivo+", valor regresado: "+salida);
+	}
+    //Terminar Proceso//
+        return salida;
+    }
+    
+    
+    
+    /**
      * Descripcion: Guardar el registro Actual en un nuevo Archivo
      *              Esto aumenta el contador de History y de Actividad y posiblemente de Periodo
      *
@@ -246,6 +355,7 @@ public class DataController {
 	//Comenzar Proceso//
         if(condiciones==true){
             //Crear el nuevo archivo
+            Principal.numHistory=Principal.numHistory+1;
             String nombreNew = Principal.rutaHistory+Principal.nameHistoryFiles+(Principal.numHistory)+".caos";
             Archivos.Binary.CrearNewFile(nombreNew);
             
@@ -277,6 +387,50 @@ public class DataController {
     		System.out.println("Proceso saveActualReg_newFile Terminado con FALLO");
     	}
     }
+    
+    
+    
+    
+    
+    /**
+     * Descripcion: Guardar el registro Actual en el Archivo Actual
+     *              Esto solo podria aumentar el cotnador de Actividad
+     *
+     */
+    public void saveActualReg_actualFile(){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+		//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Crear el nuevo archivo
+            String nombreNew = Principal.rutaHistory+Principal.nameHistoryFiles+(Principal.numHistory)+".caos";
+            Archivos.Binary.CrearNewFile(nombreNew);
+            
+            //Agregar los datos del ultimo registro
+            Binary archivo = new Binary(nombreNew);
+            archivo.Escribir(AllHistory[sizeHistory-1]);
+            
+            //Modificar el Archivo de Configuracion
+            Archivos.Text file = new Text(Principal.configFile);
+            
+                //Cambiar el contador de Actividad
+                int posline = file.posLineLike("#Actividad#(#)#","#");
+                file.RemplaceLineN(posline,"Actividad("+Principal.numActivity+")");
+        }else{
+            System.out.println("ERROR en saveActualReg_newFile, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+    		System.out.println("Proceso saveActualReg_newFile Terminado con EXITO");
+    	}else{
+    		System.out.println("Proceso saveActualReg_newFile Terminado con FALLO");
+    	}
+    }
+    
+    
     
     
 }

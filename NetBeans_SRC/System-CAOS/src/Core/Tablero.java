@@ -18,7 +18,13 @@ public class Tablero extends javax.swing.JFrame {
 
     //Variable de Tipo de Trabajo de la Tabla
     // True=Crear    False=Report
-    public static boolean TypeWork = true;
+    public boolean TypeWork = true;
+    
+    
+    
+    //Variables del Editor de Area
+    public Editor_Areas AreaEditor;
+    
     
     
     /**
@@ -48,7 +54,7 @@ public class Tablero extends javax.swing.JFrame {
             
             //Mandar a Cargar los Diferentes elementos de la Tabla
             Cargar_ComboAreas();
-            Cargar_Arbol("Prueba");
+            Cargar_ArbolSelected();
 	}else{
             System.out.println("ERROR en Constructor: Tablero, motivo: "+motivo);
 	}
@@ -69,6 +75,11 @@ public class Tablero extends javax.swing.JFrame {
     if(Arbol == null){
         condiciones=false;
         motivo="Nombre Arbol null";
+        
+        //Limpiar el Diagrama anterior
+            Diagram_Arbol.setModel(new DefaultTreeModel(new TreeString("vacio","vacio").getDefaultMutableTreeNode()));
+            DefaultTreeModel modelo = (DefaultTreeModel) Diagram_Arbol.getModel();
+            modelo.reload();
     }
 	//Comenzar Proceso//
         if(condiciones==true){
@@ -99,6 +110,60 @@ public class Tablero extends javax.swing.JFrame {
     
     
     /**
+     * Descripcion: Cargar el Arbol Seleccionado en el Combo Areas
+     *
+     */
+    public void Cargar_ArbolSelected(){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Leer cual es el Arbol actual
+            String element = comboAreas.getItemAt(comboAreas.getSelectedIndex());
+            Cargar_Arbol(element);
+        }else{
+            System.out.println("ERROR en Cargar_ArbolSelected, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso Cargar_ArbolSelected Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso Cargar_ArbolSelected Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+    
+    /**
+     * Descripcion: Recargar Todo el Tablero tomando en cuenta el Tipo de Trabajo
+     *
+     */
+    public void Reload(){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+    
+	//Comenzar Proceso//
+        if(condiciones==true){
+            Cargar_ArbolSelected();
+        }else{
+            System.out.println("ERROR en Reload, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso Reload Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso Reload Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+    /**
      * Descripcion: Cargar las areas del sistema para hacer el comboBox de areas
      *
      */
@@ -110,8 +175,11 @@ public class Tablero extends javax.swing.JFrame {
 		//no hay condiciones Iniciales
 	//Comenzar Proceso//
         if(condiciones==true){
-            VectorString temp = Principal.DataControll.getActual_AreasWork();
+            //Limpiar el combo de Areas
+            comboAreas.removeAllItems();
             
+            //Agregar todas las nuevas Areas
+            VectorString temp = Principal.DataControll.getActual_AreasWork();
             
             for(int i=0; i<temp.Longitud(); i++){
                 comboAreas.addItem(temp.getValue(i,"ERROR en cargarCombo"));
@@ -184,9 +252,19 @@ public class Tablero extends javax.swing.JFrame {
 
         jLabel1.setText("AREA");
 
-        jButton1.setText("Add");
+        jButton1.setText("Edit");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Reload");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jScrollPane1.setViewportView(Diagram_Arbol);
 
@@ -207,11 +285,15 @@ public class Tablero extends javax.swing.JFrame {
 
         jButton3.setText("Filter");
 
-        jTextField1.setText("jTextField1");
+        jTextField1.setText("Name ACT");
 
         jLabel3.setText("Tag");
 
+        jTextField2.setText("$");
+
         jLabel4.setText("VarChar");
+
+        jTextField3.setText("#");
 
         jLabel5.setText("ID");
 
@@ -270,7 +352,7 @@ public class Tablero extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -318,7 +400,7 @@ public class Tablero extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(0, 29, Short.MAX_VALUE)
+                                .addGap(0, 30, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -399,6 +481,16 @@ public class Tablero extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        //Crear la ventana del Editor de Area
+        AreaEditor = new Editor_Areas();
+        AreaEditor.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        Reload();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -436,7 +528,7 @@ public class Tablero extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTree Diagram_Arbol;
-    private javax.swing.JComboBox<String> comboAreas;
+    public javax.swing.JComboBox<String> comboAreas;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;

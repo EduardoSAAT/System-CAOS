@@ -18,7 +18,7 @@ import Core.Tablero;
 public class MenuPrincipal extends javax.swing.JFrame {
     
     //Variables del Tablero
-    public static Tablero MenuTablero;
+    public Tablero MenuTablero;
     
     
 
