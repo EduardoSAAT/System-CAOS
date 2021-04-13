@@ -480,5 +480,41 @@ public class Registro implements Serializable{
     
     
     
+     /**
+     * Descripcion: Obtener String de una actividad buscandola por ID
+     *
+     * @param	ID de la actividad
+     * @return	String con valor o null
+     */
+    public String getAct_byID (String ID){
+    //Variables Locales e Inicializacion//
+        boolean condiciones=true;
+	String motivo="Indeterminado";
+        String salida=null;
+    //Comprobar Condiciones Iniciales//
+	//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Buscar en todas las actividades
+            int size=Actividades.Longitud();
+            String line="";
+            String subID="";
+            for(int i=0; i<size; i++){
+                line=Actividades.getValue(i,null);
+                
+                subID = Cad.subCadCadACadB(line,"ID(",")");
+                if(Cad.Equals(subID,ID,false)){
+                    //Encontramos la actividad
+                    salida=line;
+                    i=size;
+                }
+            }
+	}else{
+            System.out.println("ERROR en getAct_byID, motivo: "+motivo+", valor regresado: "+salida);
+	}
+    //Terminar Proceso//
+        return salida;
+    }
+    
     
 }

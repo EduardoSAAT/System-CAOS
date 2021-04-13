@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package Core;
+import Algoritms.Cad;
 import Core.Principal;
 import DataStructure.TreeString;
 import Dinamic.VectorString;
@@ -21,10 +22,12 @@ public class Tablero extends javax.swing.JFrame {
     public boolean TypeWork = true;
     
     
-    
     //Variables del Editor de Area
     public Editor_Areas AreaEditor;
     
+    
+    //Variables del editor de actividades
+    public Editor_Actividades ActEditor;
     
     
     /**
@@ -164,6 +167,61 @@ public class Tablero extends javax.swing.JFrame {
     
     
     /**
+     * Descripcion: Mostrar la informacion ordenada de una actividad en el Tablero
+     *
+     * @param   actividad Que debe tener todas las variables
+     */
+    public void Cargar_Actividad(String actividad){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+    if(Cad.isNulloVacia(actividad)){
+        condiciones=false;
+        motivo="Actividad null o vacia";
+        textActividad.setText("");
+    }
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Limpiar el texto
+            textActividad.setText("");
+            
+            //Obtener los datos//
+            String NombreActividad=Cad.subCadCadACadB(actividad, "ACT(",")");
+            String ID=Cad.subCadCadACadB(actividad, "ID(",")");
+            String Prioridad=Cad.subCadCadACadB(actividad, "P(",")");
+            String FF=Cad.subCadCadACadB(actividad, "FF(",")");
+            String Porcentaje=Cad.subCadCadACadB(actividad, "%(",")");
+            String Tmax=Cad.subCadCadACadB(actividad, "Tmax(",")");
+            String Tuse=Cad.subCadCadACadB(actividad, "Tuse(",")");
+            String CBP=Cad.subCadCadACadB(actividad, "CBP(",")");
+            String PBP=Cad.subCadCadACadB(actividad, "PBP(",")");
+            String RBP=Cad.subCadCadACadB(actividad, "RBP(",")");
+            
+            
+            //Construir el cuadro
+            textActividad.append("ID("+ID+")"+"   Actividad: "+NombreActividad+"\n");
+            textActividad.append("Prioridad: "+Prioridad+"   Porcentaje Avance: "+Porcentaje+"%\n");
+            textActividad.append("FF("+FF+")   Tmax:"+Tmax+"mins   Tuse:"+Tuse+"mins\n");
+            textActividad.append("\n");
+            textActividad.append("Cantida BP:"+CBP+"$ /hora_trabajo\n");
+            textActividad.append("Plazo BP:"+PBP+" plazo\n");
+            textActividad.append("Retorno BP:"+RBP+" recurrente\n");
+            
+        }else{
+            System.out.println("ERROR en Cargar_Actividad, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso Cargar_Actividad Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso Cargar_Actividad Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+    /**
      * Descripcion: Cargar las areas del sistema para hacer el comboBox de areas
      *
      */
@@ -217,18 +275,18 @@ public class Tablero extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButton3 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        textActNameAct = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        textActTag = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        textActVarChar = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        textActID = new javax.swing.JTextField();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        textActividad = new javax.swing.JTextArea();
         jLabel6 = new javax.swing.JLabel();
         jComboBox2 = new javax.swing.JComboBox<>();
         jComboBox3 = new javax.swing.JComboBox<>();
@@ -285,27 +343,37 @@ public class Tablero extends javax.swing.JFrame {
 
         jButton3.setText("Filter");
 
-        jTextField1.setText("Name ACT");
+        textActNameAct.setText("Name ACT");
 
         jLabel3.setText("Tag");
 
-        jTextField2.setText("$");
+        textActTag.setText("$");
 
         jLabel4.setText("VarChar");
 
-        jTextField3.setText("#");
+        textActVarChar.setText("#");
 
         jLabel5.setText("ID");
 
         jButton4.setText("Edit Act");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("Add Act");
 
         jButton6.setText("Buscar");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane3.setViewportView(jTextArea1);
+        textActividad.setColumns(20);
+        textActividad.setRows(5);
+        jScrollPane3.setViewportView(textActividad);
 
         jLabel6.setText("ESTADISTIC");
 
@@ -343,7 +411,7 @@ public class Tablero extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jScrollPane3)
-                    .addComponent(jTextField1)
+                    .addComponent(textActNameAct)
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -358,11 +426,11 @@ public class Tablero extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField2)
+                                .addComponent(textActTag)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(textActVarChar, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGap(18, 18, 18)
@@ -372,7 +440,7 @@ public class Tablero extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
-                            .addComponent(jTextField4))))
+                            .addComponent(textActID))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2)
@@ -431,7 +499,7 @@ public class Tablero extends javax.swing.JFrame {
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textActNameAct, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
                     .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -441,9 +509,9 @@ public class Tablero extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField3)
-                            .addComponent(jTextField4)
+                            .addComponent(textActTag)
+                            .addComponent(textActVarChar)
+                            .addComponent(textActID)
                             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -490,6 +558,51 @@ public class Tablero extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         Reload();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        //Buscar la actividad por ID si este esta
+        if(Cad.isNulloVacia(textActID.getText())==false){
+            String actID = textActID.getText();
+            String actFULL = Principal.DataControll.getActual_Act_ID(actID);
+            
+            Cargar_Actividad(actFULL);
+        }else{
+            //Si no intentar buscar por Nombre, si este esta
+            if(Cad.isNulloVacia(textActNameAct.getText())==false){
+                
+            }else{
+                //Si no Mandar error
+                textActID.setText("Edite filtros de busqueda");
+            }
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        //Tomar el elemento seleccionado
+        DefaultMutableTreeNode selectedNode;
+        String elemento=null;
+        try {
+            selectedNode =(DefaultMutableTreeNode) Diagram_Arbol.getSelectionPath().getLastPathComponent();
+            elemento = selectedNode.getUserObject().toString();
+            
+            //Obtener ID del elemento
+            String ID = Cad.subCadCadACadB(elemento, "ID(",")");
+                //Obtener la actividad por ID
+                String act=Principal.DataControll.getActual_Act_ID(ID);
+            
+            
+            
+            //Abrir el menu de edicion, si ID fue exitoso
+            if(Cad.isNulloVacia(ID)==false){
+                ActEditor = new Editor_Actividades(act);
+                ActEditor.setVisible(true);
+            }else{
+                textActNameAct.setText("Alerta: No se puede editar, seleccione actividad primero");
+            }
+        } catch (Exception e) {
+            
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -557,15 +670,15 @@ public class Tablero extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
+    private javax.swing.JTextField textActID;
+    private javax.swing.JTextField textActNameAct;
+    private javax.swing.JTextField textActTag;
+    private javax.swing.JTextField textActVarChar;
+    private javax.swing.JTextArea textActividad;
     // End of variables declaration//GEN-END:variables
 }

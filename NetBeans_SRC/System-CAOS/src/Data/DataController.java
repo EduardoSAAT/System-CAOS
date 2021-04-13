@@ -432,5 +432,29 @@ public class DataController {
     
     
     
+     /**
+     * Descripcion: Obtener una actividad por ID del registro Actual
+     *
+     * @param	ID de la actividad
+     * @return	String con valor o null
+     */
+    public String getActual_Act_ID (String ID){
+    //Variables Locales e Inicializacion//
+        boolean condiciones=true;
+	String motivo="Indeterminado";
+        String salida=null;
+    //Comprobar Condiciones Iniciales//
+        
+	//Comenzar Proceso//
+        if(condiciones==true){
+            salida=AllHistory[sizeHistory-1].getAct_byID(ID);
+	}else{
+            System.out.println("ERROR en getActual_Act_ID, motivo: "+motivo+", valor regresado: "+salida);
+	}
+    //Terminar Proceso//
+        return salida;
+    }
+    
+    
     
 }
