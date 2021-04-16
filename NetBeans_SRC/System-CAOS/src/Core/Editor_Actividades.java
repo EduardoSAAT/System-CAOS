@@ -42,6 +42,7 @@ public class Editor_Actividades extends javax.swing.JFrame {
             Act=actividad;
             
             //Obtener los parametros de la actividad
+            String ID = Cad.subCadCadACadB(actividad,"ID(",")");
             String name=Cad.subCadCadACadB(actividad,"ACT(",")");
             String FF=Cad.subCadCadACadB(actividad,"FF(",")");
             String Prioridad=Cad.subCadCadACadB(actividad,"P(",")");
@@ -75,6 +76,8 @@ public class Editor_Actividades extends javax.swing.JFrame {
                 if(Cad.Equals(RBP,"NO",true)){
                     comboRBP.setSelectedIndex(1);
                 }
+            String PadreID=Principal.DataControll.getActual_PadreID_byHijoID(ID);
+            
                 
             //Construir la ventana
             textNameAct.setText(name);
@@ -83,6 +86,7 @@ public class Editor_Actividades extends javax.swing.JFrame {
             texTUSE.setText(Tuse);
             textPorcentaje.setText(porcent);
             textCBP.setText(CBP);
+            textPadreID.setText(PadreID);
 	}else{
             System.out.println("ERROR en Editor_Actividades: nombreClase, motivo: "+motivo);
 	}
@@ -121,6 +125,8 @@ public class Editor_Actividades extends javax.swing.JFrame {
         comboRBP = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         textMensaje = new javax.swing.JTextField();
+        textPadreID = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
 
         jFormattedTextField1.setText("jFormattedTextField1");
 
@@ -159,6 +165,8 @@ public class Editor_Actividades extends javax.swing.JFrame {
             }
         });
 
+        jLabel11.setText("Hacer Hijo del Nodo con ID: ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -195,12 +203,14 @@ public class Editor_Actividades extends javax.swing.JFrame {
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                             .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(textCBP)
                                             .addComponent(comboPBP, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(comboRBP, 0, 151, Short.MAX_VALUE)))))))
+                                            .addComponent(comboRBP, 0, 151, Short.MAX_VALUE)
+                                            .addComponent(textPadreID, javax.swing.GroupLayout.Alignment.TRAILING)))))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(textMensaje)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -217,16 +227,16 @@ public class Editor_Actividades extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(textNameAct, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(comboPrioridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(comboPrioridad)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(textFF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textTMAX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textTMAX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
                     .addComponent(textCBP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -242,7 +252,11 @@ public class Editor_Actividades extends javax.swing.JFrame {
                         .addComponent(textPorcentaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel10)
                         .addComponent(comboRBP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(textPadreID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(textMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -295,6 +309,10 @@ public class Editor_Actividades extends javax.swing.JFrame {
             
         //Si todo esta correcto, entonces guardar los cambios
         if(correcto){
+            //Construir la actividad
+            
+            
+            
             this.dispose();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -342,6 +360,7 @@ public class Editor_Actividades extends javax.swing.JFrame {
     private javax.swing.JFormattedTextField jFormattedTextField1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -355,6 +374,7 @@ public class Editor_Actividades extends javax.swing.JFrame {
     private javax.swing.JTextField textFF;
     private javax.swing.JTextField textMensaje;
     private javax.swing.JTextField textNameAct;
+    private javax.swing.JTextField textPadreID;
     private javax.swing.JTextField textPorcentaje;
     private javax.swing.JTextField textTMAX;
     // End of variables declaration//GEN-END:variables

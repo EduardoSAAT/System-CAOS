@@ -15,6 +15,8 @@ import Algoritms.Cad;
 public class Registro implements Serializable{
     //Registro de Coleccion de Arboles
     // Formato de Actividad para cada Arbol
+    // NAME() - Parametro para el nombre de las raices y ramas
+    //
     // A()    - Nombre del Arbol
     // ID()   - Identificador de la actividad, unico en todo el sistema, en todos los arboles
     // FF()   - Fecha de Fin, en la cual la actividad no tiene sentido ser realizada
@@ -33,11 +35,14 @@ public class Registro implements Serializable{
     public int sizeTrees;
 
     
-    //Areas de Trabajo Definidas
+    //Areas de Trabajo Definidas, solo para consulta
     public VectorString AreasWork;
     
-    //Coleccion completa de Actividades
+    //Coleccion completa de Actividades, solo para consulta rapida
     public VectorString Actividades;
+    
+    //Coleccion completa de Ramas, solo para consultas
+    //public VectorString Ramas;
     
      
             
@@ -58,8 +63,9 @@ public class Registro implements Serializable{
             arboles = new TreeString[sizeTrees];
             
             //Construir arbol
-            TreeString a1 = new TreeString("Prueba","Prueba");
-            a1.addSon("R","A(Prueba)ID(1)FF(1/1/2030)P(ALTA)Tmax(60)Tuse(30)%(50)PBP(Largo)RBP(YES)CBP(100)ACT(Actividad Prueba)STAT(false)");
+            TreeString a1 = new TreeString("Prueba","A(Prueba)ID(1)%(1)ACT(Prueba)");
+            a1.addSon("R","A(Prueba)ID(2)%(50)ACT(Paquete General)");
+            a1.addSon("1H","A(Prueba)ID(3)FF(1/1/2030)P(ALTA)Tmax(60)Tuse(30)%(50)PBP(Largo)RBP(YES)CBP(100)ACT(Actividad 1)STAT(false)");
             arboles[0] = a1;
                 
                 System.out.println("----------- Primer Registro Creado -------------");
@@ -68,12 +74,13 @@ public class Registro implements Serializable{
             
                 
             //Modificar el contador de Actividades
-            Principal.numActivity=1;
+            Principal.numActivity=3;
             
             
             //Cargar lo nuevos Datos
             Cargar_AreasWork();
             Cargar_Actividades();
+            //Cargar_Ramas();
         }else{
             System.out.println("ERROR en CrearPrimerRegistro, motivo: "+motivo);
 	}
@@ -132,6 +139,7 @@ public class Registro implements Serializable{
             //Cargar lo nuevos Datos
             Cargar_AreasWork();
             Cargar_Actividades();
+            //Cargar_Ramas();
         }else{
             System.out.println("ERROR en Crear_Arbol, motivo: "+motivo);
 	}
@@ -252,6 +260,7 @@ public class Registro implements Serializable{
             //Recargar Variables
             Cargar_AreasWork();
             Cargar_Actividades();
+            //Cargar_Ramas();
         }else{
             System.out.println("ERROR en Elimina_Arbol, motivo: "+motivo);
 	}
@@ -303,6 +312,46 @@ public class Registro implements Serializable{
             System.out.println("Proceso Cargar_Actividades Terminado con FALLO");
     	}
     }
+    
+    
+    /**
+     * Descripcion: Cargar todas las ramas del Registro
+     *
+     */
+    /*public void Cargar_Ramas(){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+		//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Crear el vector
+            Ramas = new VectorString(Principal.numActivity);
+            
+            //Para todos los arboles obtener sus ramas//
+            for(int i=0; i<sizeTrees; i++){
+                VectorString temp = new VectorString(arboles[i].getRamasAll());
+                
+                //Pasar cada una de las actividades en temp al conjunto global
+                for(int x=0; x<temp.Longitud(); x++){
+                    Ramas.addVauleRigth(temp.getValue(x,"Error al obtener actividad"));
+                }
+            }
+            
+            System.out.println("------------ Ramas Cargadas -------------");
+            Ramas.ImprimirConsola("\n");
+            System.out.println("\n");
+        }else{
+            System.out.println("ERROR en Cargar_Ramas, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso Cargar_Ramas Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso Cargar_Ramas Terminado con FALLO");
+    	}
+    }*/
     
     
     
@@ -481,6 +530,82 @@ public class Registro implements Serializable{
     
     
      /**
+     * Descripcion: Obtener El ID del padre de un Hijo por su ID
+     *
+     * @param	HijoID Para buscar su padre
+     * @return	String de su ID o null si no esta
+     */
+    public String getPadreID_byHijoID (String HijoID){
+    //Variables Locales e Inicializacion//
+        boolean condiciones=true;
+	String motivo="Indeterminado";
+        String salida=null;
+    //Comprobar Condiciones Iniciales//
+	//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Buscar la actividad y obtener su ubicacion
+            String ubicacion = getUbicacionNode_byID(HijoID);
+            String arbol = Cad.subCadCadACadB(ubicacion,"A(",")");
+            String path = Cad.subCadCadACadB(ubicacion,"POS(",")");
+            
+            //Obtener al padre con los datos del hijo
+            String padre = arboles[pos_ArbolID(arbol)].getPadre(path,null);
+            salida = Cad.subCadCadACadB(padre,"ID(",")");
+	}else{
+            System.out.println("ERROR en getPadreID_byHijoID, motivo: "+motivo+", valor regresado: "+salida);
+	}
+    //Terminar Proceso//
+        return salida;
+    }
+    
+    
+    
+     /**
+     * Descripcion: Obtener la ubicacion de algun nodo (actividad o rama) dado su ID
+     *  Nomenglatura: A(NombreArbol)POS(1H2H1H)
+     *
+     * @param	nodeID Para obtener su ubicacion
+     * @return	String con ubicacion o null en caso de error
+     */
+    public String getUbicacionNode_byID (String nodeID){
+    //Variables Locales e Inicializacion//
+        boolean condiciones=true;
+	String motivo="Indeterminado";
+        String salida=null;
+    //Comprobar Condiciones Iniciales//
+	//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Buscar en todos los arboles hasta encontrar el ID
+            String ruta=null;
+            int posArbol=-1;
+            for(int i=0; i<sizeTrees; i++){
+                ruta = arboles[i].getRutaElementLike("#ID("+nodeID+")#","#");
+                
+                //Si la ruta es diferente de null entonces encontro
+                if(ruta!=null){
+                    posArbol=i;
+                    i=sizeTrees;
+                }
+            }
+            
+            //Construir la salida con los datos
+            if(Cad.isNulloVacia(ruta)||posArbol==-1){
+                //Mensaje de error
+            }else{
+                salida="A("+arboles[posArbol].IdArbol+")"+"POS("+ruta+")";
+            }
+	}else{
+            System.out.println("ERROR en getUbicacionNode_byID, motivo: "+motivo+", valor regresado: "+salida);
+	}
+    //Terminar Proceso//
+        return salida;
+    }
+    
+    
+    
+     /**
      * Descripcion: Obtener String de una actividad buscandola por ID
      *
      * @param	ID de la actividad
@@ -509,6 +634,38 @@ public class Registro implements Serializable{
                     i=size;
                 }
             }
+	}else{
+            System.out.println("ERROR en getAct_byID, motivo: "+motivo+", valor regresado: "+salida);
+	}
+    //Terminar Proceso//
+        return salida;
+    }
+    
+    
+    
+    
+     /**
+     * Descripcion: Obtener String de un nodo buscandola por ID
+     *
+     * @param	ID del nodo en general
+     * @return	String con valor o null
+     */
+    public String getNode_byID (String NodeID){
+    //Variables Locales e Inicializacion//
+        boolean condiciones=true;
+	String motivo="Indeterminado";
+        String salida=null;
+    //Comprobar Condiciones Iniciales//
+	//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Obtener la ubicacion del node por ID
+            String ubicacion = getUbicacionNode_byID(NodeID);
+            String arbol = Cad.subCadCadACadB(ubicacion,"A(",")");
+            String path = Cad.subCadCadACadB(ubicacion,"POS(",")");
+            
+            //Obtener el elemento
+            salida = arboles[pos_ArbolID(arbol)].getElement(path,null);
 	}else{
             System.out.println("ERROR en getAct_byID, motivo: "+motivo+", valor regresado: "+salida);
 	}

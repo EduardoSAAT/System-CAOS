@@ -584,13 +584,14 @@ public class Tablero extends javax.swing.JFrame {
         try {
             selectedNode =(DefaultMutableTreeNode) Diagram_Arbol.getSelectionPath().getLastPathComponent();
             elemento = selectedNode.getUserObject().toString();
-            
-            //Obtener ID del elemento
+        } catch (Exception e) {
+        }
+        
+        //Obtener ID del elemento
             String ID = Cad.subCadCadACadB(elemento, "ID(",")");
-                //Obtener la actividad por ID
-                String act=Principal.DataControll.getActual_Act_ID(ID);
-            
-            
+                //Obtener el nodo por su ID
+                String act = Principal.DataControll.getActualNode_byID(ID);
+                System.out.println("Editando Actividad: "+act);
             
             //Abrir el menu de edicion, si ID fue exitoso
             if(Cad.isNulloVacia(ID)==false){
@@ -599,9 +600,6 @@ public class Tablero extends javax.swing.JFrame {
             }else{
                 textActNameAct.setText("Alerta: No se puede editar, seleccione actividad primero");
             }
-        } catch (Exception e) {
-            
-        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     /**

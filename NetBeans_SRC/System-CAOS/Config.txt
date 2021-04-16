@@ -1,8 +1,8 @@
 # Configuracion de Systema CAOS
 
-# Contador de Actividad
-# La siguiente actividad adquirira el valor actual+1
-Actividad(1)
+# Contador de Nodos
+# El siguiente nodo adquirira el valor actual+1
+Actividad(3)
 
 # Contador del Ultimo Archivo de History
 # Si el valor es 0, se crea un nuevo archivo de History por default

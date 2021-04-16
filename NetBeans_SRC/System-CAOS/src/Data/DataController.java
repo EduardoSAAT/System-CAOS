@@ -341,6 +341,56 @@ public class DataController {
     
     
     
+     /**
+     * Descripcion: Obtener la posicion de un Arbol del Registro Actual basado en su ID
+     *
+     * @param	HijoID  el ID del Hijo
+     * @return	String ID del padre o null
+     */
+    public String getActual_PadreID_byHijoID (String HijoID){
+    //Variables Locales e Inicializacion//
+        boolean condiciones=true;
+	String motivo="Indeterminado";
+        String salida=null;
+    //Comprobar Condiciones Iniciales//
+	//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            salida = AllHistory[sizeHistory-1].getPadreID_byHijoID(HijoID);
+	}else{
+            System.out.println("ERROR en getActual_PadreID_byHijoID, motivo: "+motivo+", valor regresado: "+salida);
+	}
+    //Terminar Proceso//
+        return salida;
+    }
+    
+    
+    
+     /**
+     * Descripcion: Obtener un nodo del registro actual dado su ID
+     *
+     * @param	nodeID Para obtener sus datos
+     * @return	String con datos o null
+     */
+    public String getActualNode_byID (String nodeID){
+    //Variables Locales e Inicializacion//
+        boolean condiciones=true;
+	String motivo="Indeterminado";
+        String salida=null;
+    //Comprobar Condiciones Iniciales//
+	//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            salida=AllHistory[sizeHistory-1].getNode_byID(nodeID);
+	}else{
+            System.out.println("ERROR en getActualNode_byID, motivo: "+motivo+", valor regresado: "+salida);
+	}
+    //Terminar Proceso//
+        return salida;
+    }
+    
+    
+    
     /**
      * Descripcion: Guardar el registro Actual en un nuevo Archivo
      *              Esto aumenta el contador de History y de Actividad y posiblemente de Periodo
