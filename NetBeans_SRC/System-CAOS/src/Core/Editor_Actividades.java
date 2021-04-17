@@ -13,7 +13,8 @@ import Algoritms.Nums;
  * @author Ing Lalux
  */
 public class Editor_Actividades extends javax.swing.JFrame {
-    String Act;
+    public String Act;
+    boolean isAct=false;
     
     
     /**
@@ -22,6 +23,37 @@ public class Editor_Actividades extends javax.swing.JFrame {
     public Editor_Actividades() {
         initComponents();
     }
+    
+    
+    
+     /**
+     * Descripcion: Comprobar si un nodo es actividad o nodo
+     *
+     * @param	act Comprobar si una actividad es actividad o nodo
+     * @return	false no es actividad, true es actividad
+     */
+    public boolean isActividad (String act){
+    //Variables Locales e Inicializacion//
+        boolean condiciones=true;
+	String motivo="Indeterminado";
+        boolean salida=false;
+    //Comprobar Condiciones Iniciales//
+	//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Si es una actividad entonces debe tener el parametro FF()
+            String fecha = Cad.subCadCadACadB(act,"FF(",")");
+            
+            if(Cad.isNulloVacia(fecha)==false){
+                salida=true;
+            }
+	}else{
+            System.out.println("ERROR en isActividad, motivo: "+motivo+", valor regresado: "+salida);
+	}
+    //Terminar Proceso//
+        return salida;
+    }
+
     
     
     
@@ -41,52 +73,79 @@ public class Editor_Actividades extends javax.swing.JFrame {
             initComponents();
             Act=actividad;
             
-            //Obtener los parametros de la actividad
-            String ID = Cad.subCadCadACadB(actividad,"ID(",")");
-            String name=Cad.subCadCadACadB(actividad,"ACT(",")");
-            String FF=Cad.subCadCadACadB(actividad,"FF(",")");
-            String Prioridad=Cad.subCadCadACadB(actividad,"P(",")");
-                if(Cad.Equals(Prioridad,"ALTA",true)){
-                    comboPrioridad.setSelectedIndex(0);
-                }
-                if(Cad.Equals(Prioridad,"MEDIA",true)){
-                    comboPrioridad.setSelectedIndex(1);
-                }
-                if(Cad.Equals(Prioridad,"BAJA",true)){
-                    comboPrioridad.setSelectedIndex(2);
-                }
-            String Tmax=Cad.subCadCadACadB(actividad,"Tmax(",")");
-            String Tuse=Cad.subCadCadACadB(actividad,"Tuse(",")");    
-            String porcent=Cad.subCadCadACadB(actividad,"%(",")");
-            String CBP=Cad.subCadCadACadB(actividad,"CBP(",")");
-            String PBP=Cad.subCadCadACadB(actividad,"PBP(",")");
-                if(Cad.Equals(PBP,"CORTO",true)){
-                    comboPBP.setSelectedIndex(0);
-                }
-                if(Cad.Equals(PBP,"MEDIANO",true)){
-                    comboPBP.setSelectedIndex(1);
-                }
-                if(Cad.Equals(PBP,"LARGO",true)){
-                    comboPBP.setSelectedIndex(2);
-                }
-            String RBP=Cad.subCadCadACadB(actividad,"RBP(",")");
-                if(Cad.Equals(RBP,"YES",true)){
-                    comboRBP.setSelectedIndex(0);
-                }
-                if(Cad.Equals(RBP,"NO",true)){
-                    comboRBP.setSelectedIndex(1);
-                }
-            String PadreID=Principal.DataControll.getActual_PadreID_byHijoID(ID);
-            
+            //Comprobar si se trata de una actividad o de un nodo
+            isAct = isActividad(Act);
+            if(isAct){
+                System.out.println("Modificando Actividad:"+Act);
                 
-            //Construir la ventana
-            textNameAct.setText(name);
-            textFF.setText(FF);
-            textTMAX.setText(Tmax);
-            texTUSE.setText(Tuse);
-            textPorcentaje.setText(porcent);
-            textCBP.setText(CBP);
-            textPadreID.setText(PadreID);
+                //Obtener los parametros de la actividad
+                String ID = Cad.subCadCadACadB(actividad,"ID(",")");
+                String name=Cad.subCadCadACadB(actividad,"ACT(",")");
+                String FF=Cad.subCadCadACadB(actividad,"FF(",")");
+                String Prioridad=Cad.subCadCadACadB(actividad,"P(",")");
+                    if(Cad.Equals(Prioridad,"ALTA",true)){
+                        comboPrioridad.setSelectedIndex(0);
+                    }
+                    if(Cad.Equals(Prioridad,"MEDIA",true)){
+                        comboPrioridad.setSelectedIndex(1);
+                    }
+                    if(Cad.Equals(Prioridad,"BAJA",true)){
+                        comboPrioridad.setSelectedIndex(2);
+                    }
+                String Tmax=Cad.subCadCadACadB(actividad,"Tmax(",")");
+                String Tuse=Cad.subCadCadACadB(actividad,"Tuse(",")");    
+                String porcent=Cad.subCadCadACadB(actividad,"%(",")");
+                String CBP=Cad.subCadCadACadB(actividad,"CBP(",")");
+                String PBP=Cad.subCadCadACadB(actividad,"PBP(",")");
+                    if(Cad.Equals(PBP,"CORTO",true)){
+                        comboPBP.setSelectedIndex(0);
+                    }
+                    if(Cad.Equals(PBP,"MEDIANO",true)){
+                        comboPBP.setSelectedIndex(1);
+                    }
+                    if(Cad.Equals(PBP,"LARGO",true)){
+                        comboPBP.setSelectedIndex(2);
+                    }
+                String RBP=Cad.subCadCadACadB(actividad,"RBP(",")");
+                    if(Cad.Equals(RBP,"YES",true)){
+                        comboRBP.setSelectedIndex(0);
+                    }
+                    if(Cad.Equals(RBP,"NO",true)){
+                        comboRBP.setSelectedIndex(1);
+                    }
+                String PadreID=Principal.DataControll.getActual_PadreID_byHijoID(ID);
+
+
+                //Construir la ventana
+                textNameAct.setText(name);
+                textFF.setText(FF);
+                textTMAX.setText(Tmax);
+                texTUSE.setText(Tuse);
+                textPorcentaje.setText(porcent);
+                textCBP.setText(CBP);
+                textPadreID.setText(PadreID);
+            }else{
+                System.out.println("Modificando Nodo:"+Act);
+                
+                //Obtener los parametros del nodo
+                String ID = Cad.subCadCadACadB(actividad,"ID(",")");
+                String name=Cad.subCadCadACadB(actividad,"ACT(",")");  
+                String porcent=Cad.subCadCadACadB(actividad,"%(",")");
+                String PadreID=Principal.DataControll.getActual_PadreID_byHijoID(ID);
+
+
+                //Construir la ventana
+                textNameAct.setText(name);
+                textFF.setEnabled(false);
+                textTMAX.setEnabled(false);
+                texTUSE.setEnabled(false);
+                textPorcentaje.setText(porcent);
+                textCBP.setEnabled(false);
+                textPadreID.setText(PadreID);
+                comboPrioridad.setEnabled(false);
+                comboPBP.setEnabled(false);
+                comboRBP.setEnabled(false);
+            }
 	}else{
             System.out.println("ERROR en Editor_Actividades: nombreClase, motivo: "+motivo);
 	}
@@ -267,54 +326,87 @@ public class Editor_Actividades extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        //Evaluar todos los elementos a agregar en la actividad
-        boolean correcto=true;
-            //Evaluar el nombre
-            if(Cad.isNulloVacia(textNameAct.getText())){
-                correcto=false;
-                textMensaje.setText("Nombre de actividad vacio");
+        
+        //Comprobar si es una actividad o un Nodo
+        if(isAct){
+            //Evaluar todos los elementos a agregar en la actividad
+            boolean correcto=true;
+                //Evaluar el nombre
+                if(Cad.isNulloVacia(textNameAct.getText())){
+                    correcto=false;
+                    textMensaje.setText("Nombre de actividad vacio");
+                }
+
+                //Evaluar la fecha
+                if(time.AlgoritmsT.validarFecha(textFF.getText())==false){
+                    correcto=false;
+                    textMensaje.setText("Fecha FF no valida, verificarla");
+                }
+
+                //Evaluar el Tmax
+                if(Cad.aEntero(textTMAX.getText(),-1)<0){
+                    correcto=false;
+                    textMensaje.setText("Tiempo Maximo debe ser mayor igual a 0");
+                }
+
+                //Evaluar el Tuse
+                if(Cad.aEntero(texTUSE.getText(),-1)<0){
+                    correcto=false;
+                    textMensaje.setText("Tiempo Uso debe ser mayor igual a 0");
+                }
+
+                //Evaluar porcentaje de avance
+                int porcent = Cad.aEntero(textPorcentaje.getText(),-1);
+                if(Nums.Range(porcent,0,100)==false){
+                    correcto=false;
+                    textMensaje.setText("Porcentaje fuera de rango de 0 a 100");
+                }
+
+                //Evaluar el CBP
+                if(Cad.aEntero(textCBP.getText(),-1)<0){
+                    correcto=false;
+                    textMensaje.setText("Cantidad de BP debe ser mayor o igual a 0");
+                }
+
+
+            //Si todo esta correcto, entonces guardar los cambios
+            if(correcto){
+                //Construir la actividad
+                String arbol=Cad.subCadCadACadB(Act,"A(",")");
+                String ID=Cad.subCadCadACadB(Act,"ID(",")");;
+                String stat=Cad.subCadCadACadB(Act, "STAT(",")");
+                        
+                String act="A("+arbol+")";
+                    act=act+"ID("+ID+")";
+                    act=act+"FF("+textFF.getText()+")";
+                    act=act+"P("+comboPrioridad.getItemAt(comboPrioridad.getSelectedIndex())+")";
+                    act=act+"Tmax("+textTMAX.getText()+")";
+                    act=act+"Tuse("+texTUSE.getText()+")";
+                    act=act+"%("+textPorcentaje.getText()+")";
+                    act=act+"CBP("+textCBP.getText()+")";
+                    act=act+"PBP("+comboPBP.getItemAt(comboPBP.getSelectedIndex())+")";
+                    
+                    String rbp = comboRBP.getItemAt(comboRBP.getSelectedIndex());
+                    if(rbp.equals("Recurrente")){
+                        rbp="YES";
+                    }else{
+                        rbp="NO";
+                    }
+                    act=act+"RBP("+rbp+")";
+                    
+                    act=act+"ACT("+textNameAct.getText()+")";
+                    act=act+"STAT("+stat+")";
+                    
+                
+                //Mandar a modificar la actividad//
+                Principal.DataControll.modActual_Act(act,textPadreID.getText());
+                System.out.println("Valor Final al Modificar:"+act);
+                this.dispose();
             }
+        }else{
             
-            //Evaluar la fecha
-            if(time.AlgoritmsT.validarFecha(textFF.getText())==false){
-                correcto=false;
-                textMensaje.setText("Fecha FF no valida, verificarla");
-            }
-            
-            //Evaluar el Tmax
-            if(Cad.aEntero(textTMAX.getText(),-1)<0){
-                correcto=false;
-                textMensaje.setText("Tiempo Maximo debe ser mayor igual a 0");
-            }
-            
-            //Evaluar el Tuse
-            if(Cad.aEntero(texTUSE.getText(),-1)<0){
-                correcto=false;
-                textMensaje.setText("Tiempo Uso debe ser mayor igual a 0");
-            }
-            
-            //Evaluar porcentaje de avance
-            int porcent = Cad.aEntero(textPorcentaje.getText(),-1);
-            if(Nums.Range(porcent,0,100)==false){
-                correcto=false;
-                textMensaje.setText("Porcentaje fuera de rango de 0 a 100");
-            }
-            
-            //Evaluar el CBP
-            if(Cad.aEntero(textCBP.getText(),-1)<0){
-                correcto=false;
-                textMensaje.setText("Cantidad de BP debe ser mayor o igual a 0");
-            }
-            
-            
-        //Si todo esta correcto, entonces guardar los cambios
-        if(correcto){
-            //Construir la actividad
-            
-            
-            
-            this.dispose();
         }
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

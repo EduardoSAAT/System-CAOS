@@ -591,7 +591,7 @@ public class Tablero extends javax.swing.JFrame {
             String ID = Cad.subCadCadACadB(elemento, "ID(",")");
                 //Obtener el nodo por su ID
                 String act = Principal.DataControll.getActualNode_byID(ID);
-                System.out.println("Editando Actividad: "+act);
+                
             
             //Abrir el menu de edicion, si ID fue exitoso
             if(Cad.isNulloVacia(ID)==false){

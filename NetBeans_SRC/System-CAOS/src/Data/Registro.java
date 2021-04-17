@@ -185,6 +185,49 @@ public class Registro implements Serializable{
     
     
     /**
+     * Descripcion: Modificar una actividad existente
+     *  Se conseva el contador de nodos
+     *  Se conserva el id de la actividad
+     *  Su ruta puede cambiar
+     *
+     * @param   newAct  Actividad con todos sus parametros
+     * @param   position Posicion del posible nuevo padre de esta ACT A(arbol) POS(path)
+     */
+    public void ModifyActivity(String newAct, String position){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+    //no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Obtener los datos de la posicion
+            String arbol = Cad.subCadCadACadB(position,"A(",")");
+            String path =Cad.subCadCadACadB(position,"POS(",")");
+            
+            //Eliminar la actividad anteior
+            String ID = Cad.subCadCadACadB(newAct,"ID(",")");
+            deleteNode_byID(ID);
+            
+            //Agregar la nueva actividad en el nuevo path
+            arboles[pos_ArbolID(arbol)].addSon(path, newAct);
+            
+            //Recargar la lista de actividades
+            Cargar_Actividades();
+        }else{
+            System.out.println("ERROR en ModifyActivity, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso ModifyActivity Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso ModifyActivity Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+    /**
      * Descripcion: Editar el nombre de un Arbol
      *
      * @param oldName  Nombre viejo del Arbol por ID
@@ -671,6 +714,39 @@ public class Registro implements Serializable{
 	}
     //Terminar Proceso//
         return salida;
+    }
+    
+    
+    
+    /**
+     * Descripcion: Eliminar un nodo del Registro por su ID
+     *
+     * @param   ID del nodo a eliminar
+     */
+    public void deleteNode_byID(String ID){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+    String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+    
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Obtener la ubicacion del elemento
+            String ubicacion = getUbicacionNode_byID(ID);
+            String arbolID = Cad.subCadCadACadB(ubicacion,"A(",")");
+            String path = Cad.subCadCadACadB(ubicacion,"POS(",")");
+            
+            //Eliminar el Registro
+            arboles[pos_ArbolID(arbolID)].deleteNodo(path);
+        }else{
+            System.out.println("ERROR en deleteNode_byID, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso deleteNode_byID Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso deleteNode_byID Terminado con FALLO");
+    	}
     }
     
     

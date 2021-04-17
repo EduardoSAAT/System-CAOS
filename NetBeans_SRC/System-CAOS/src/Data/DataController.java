@@ -482,6 +482,60 @@ public class DataController {
     
     
     
+    /**
+     * Descripcion: Eliminar un nodo por ID del registro actual
+     *
+     */
+    public void deleteActualNode_byID(String ID){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+		//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            AllHistory[sizeHistory-1].deleteNode_byID(ID);
+        }else{
+            System.out.println("ERROR en deleteActualNode_byID, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+    		System.out.println("Proceso deleteActualNode_byID Terminado con EXITO");
+    	}else{
+    		System.out.println("Proceso deleteActualNode_byID Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+    /**
+     * Descripcion: Modificar una actividad del registro actual
+     * 
+     * @param   newAct  Actividad con todos sus parametros
+     * @param   padreID ID del nuevo posible padre para esta actividad
+     */
+    public void modActual_Act(String newAct, String padreID){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+		//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            String position = AllHistory[sizeHistory-1].getUbicacionNode_byID(padreID);
+            AllHistory[sizeHistory-1].ModifyActivity(newAct, position);
+        }else{
+            System.out.println("ERROR en modActual_Act, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+    		System.out.println("Proceso modActual_Act Terminado con EXITO");
+    	}else{
+    		System.out.println("Proceso modActual_Act Terminado con FALLO");
+    	}
+    }
+    
+    
      /**
      * Descripcion: Obtener una actividad por ID del registro Actual
      *
