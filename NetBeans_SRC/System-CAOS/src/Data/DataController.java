@@ -416,9 +416,9 @@ public class DataController {
             //Modificar el Archivo de Configuracion
             Archivos.Text file = new Text(Principal.configFile);
             
-                //Cambiar el contador de Actividad
-                int posline = file.posLineLike("#Actividad#(#)#","#");
-                file.RemplaceLineN(posline,"Actividad("+Principal.numActivity+")");
+                //Cambiar el contador de Nodos
+                int posline = file.posLineLike("#Nodos#(#)#","#");
+                file.RemplaceLineN(posline,"Nodos("+Principal.numNodos+")");
                 
                 //Cambiar el Numero de Historys
                 posline = file.posLineLike("#History#(#)#","#");
@@ -467,8 +467,8 @@ public class DataController {
             Archivos.Text file = new Text(Principal.configFile);
             
                 //Cambiar el contador de Actividad
-                int posline = file.posLineLike("#Actividad#(#)#","#");
-                file.RemplaceLineN(posline,"Actividad("+Principal.numActivity+")");
+                int posline = file.posLineLike("#Nodos#(#)#","#");
+                file.RemplaceLineN(posline,"Nodos("+Principal.numNodos+")");
         }else{
             System.out.println("ERROR en saveActualReg_newFile, motivo: "+motivo);
 	}
@@ -491,7 +491,10 @@ public class DataController {
     boolean condiciones=true;
 	String motivo="Indeterminado";
     //Comprobar Condiciones Iniciales//
-		//no hay condiciones Iniciales
+    if(Cad.isNulloVacia(ID)){
+        condiciones=false;
+        motivo="ID null o vacio";
+    }
 	//Comenzar Proceso//
         if(condiciones==true){
             AllHistory[sizeHistory-1].deleteNode_byID(ID);
@@ -532,6 +535,35 @@ public class DataController {
     		System.out.println("Proceso modActual_Act Terminado con EXITO");
     	}else{
     		System.out.println("Proceso modActual_Act Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+    /**
+     * Descripcion: Modificar un Nodo del registro actual
+     * 
+     * @param   newNodo  Nodo con todos sus parametros
+     * @param   padreID ID del nuevo posible padre para este Nodo
+     */
+    public void modActual_Nodo(String newNodo, String padreID){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+		//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            String position = AllHistory[sizeHistory-1].getUbicacionNode_byID(padreID);
+            AllHistory[sizeHistory-1].ModifyNodo(newNodo, position);
+        }else{
+            System.out.println("ERROR en modActual_Nodo, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+    		System.out.println("Proceso modActual_Nodo Terminado con EXITO");
+    	}else{
+    		System.out.println("Proceso modActual_Nodo Terminado con FALLO");
     	}
     }
     

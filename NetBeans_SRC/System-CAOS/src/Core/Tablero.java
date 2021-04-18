@@ -30,6 +30,10 @@ public class Tablero extends javax.swing.JFrame {
     public Editor_Actividades ActEditor;
     
     
+    //Variables del agregador de actividades
+    public Agregador_Actividades ActAdder;
+    
+    
     /**
      * Creates new form Tablero
      */
@@ -363,6 +367,11 @@ public class Tablero extends javax.swing.JFrame {
         });
 
         jButton5.setText("Add Act");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setText("Buscar");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
@@ -601,6 +610,11 @@ public class Tablero extends javax.swing.JFrame {
                 textActNameAct.setText("Alerta: No se puede editar, seleccione actividad primero");
             }
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        ActAdder = new Agregador_Actividades();
+        ActAdder.setVisible(true);
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments

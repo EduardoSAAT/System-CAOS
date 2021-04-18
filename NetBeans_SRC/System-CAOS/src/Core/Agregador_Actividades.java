@@ -12,16 +12,15 @@ import Algoritms.Nums;
  *
  * @author Ing Lalux
  */
-public class Editor_Actividades extends javax.swing.JFrame {
+public class Agregador_Actividades extends javax.swing.JFrame {
     public String Act;
     boolean isAct=false;
-    boolean actDeleted=false;
     
     
     /**
      * Creates new form Editor_Actividades
      */
-    public Editor_Actividades() {
+    public Agregador_Actividades() {
         initComponents();
     }
     
@@ -63,7 +62,7 @@ public class Editor_Actividades extends javax.swing.JFrame {
      *
      * @param	actividad a editar
      */
-    public Editor_Actividades(String actividad){
+    public Agregador_Actividades(String actividad){
     //Variables Locales e Inicializacion//
         boolean condiciones=true;
 	String motivo="Indeterminado";
@@ -187,13 +186,14 @@ public class Editor_Actividades extends javax.swing.JFrame {
         textMensaje = new javax.swing.JTextField();
         textPadreID = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        comboType = new javax.swing.JComboBox<>();
+        jLabel12 = new javax.swing.JLabel();
 
         jFormattedTextField1.setText("jFormattedTextField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel1.setText("Editor de Actividades");
+        jLabel1.setText("Agregador de Actividades");
 
         jLabel2.setText("Nombre Actividad:");
 
@@ -228,12 +228,9 @@ public class Editor_Actividades extends javax.swing.JFrame {
 
         jLabel11.setText("Hacer Hijo del Nodo con ID: ");
 
-        jButton2.setText("Eliminar Elemento");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
+        comboType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Actividad", "Nodo" }));
+
+        jLabel12.setText("Tipo de elemento");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -248,7 +245,8 @@ public class Editor_Actividades extends javax.swing.JFrame {
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)
                             .addComponent(jLabel3)
-                            .addComponent(jLabel5))
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel12))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(textNameAct)
@@ -261,7 +259,7 @@ public class Editor_Actividades extends javax.swing.JFrame {
                                     .addComponent(texTUSE, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(textTMAX, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(textFF, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(comboType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -324,8 +322,9 @@ public class Editor_Actividades extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textPadreID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11)
-                    .addComponent(jButton2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                    .addComponent(comboType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(textMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -336,159 +335,122 @@ public class Editor_Actividades extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        //Primero comprobar si la actividad se elimino
-        if(actDeleted){
-            //simplemente cerrar esta ventana
-            this.dispose();
+        
+        //Comprobar si es una actividad o un Nodo
+        if(isAct){
+            //Evaluar todos los elementos a agregar en la actividad
+            boolean correcto=true;
+                //Evaluar el nombre
+                if(Cad.isNulloVacia(textNameAct.getText())){
+                    correcto=false;
+                    textMensaje.setText("Nombre de actividad vacio");
+                }
+
+                //Evaluar la fecha
+                if(time.AlgoritmsT.validarFecha(textFF.getText())==false){
+                    correcto=false;
+                    textMensaje.setText("Fecha FF no valida, verificarla");
+                }
+
+                //Evaluar el Tmax
+                if(Cad.aEntero(textTMAX.getText(),-1)<0){
+                    correcto=false;
+                    textMensaje.setText("Tiempo Maximo debe ser mayor igual a 0");
+                }
+
+                //Evaluar el Tuse
+                if(Cad.aEntero(texTUSE.getText(),-1)<0){
+                    correcto=false;
+                    textMensaje.setText("Tiempo Uso debe ser mayor igual a 0");
+                }
+
+                //Evaluar porcentaje de avance
+                int porcent = Cad.aEntero(textPorcentaje.getText(),-1);
+                if(Nums.Range(porcent,0,100)==false){
+                    correcto=false;
+                    textMensaje.setText("Porcentaje fuera de rango de 0 a 100");
+                }
+
+                //Evaluar el CBP
+                if(Cad.aEntero(textCBP.getText(),-1)<0){
+                    correcto=false;
+                    textMensaje.setText("Cantidad de BP debe ser mayor o igual a 0");
+                }
+
+
+            //Si todo esta correcto, entonces guardar los cambios
+            if(correcto){
+                //Construir la actividad
+                String arbol=Cad.subCadCadACadB(Act,"A(",")");
+                String ID=Cad.subCadCadACadB(Act,"ID(",")");;
+                String stat=Cad.subCadCadACadB(Act, "STAT(",")");
+                        
+                String act="A("+arbol+")";
+                    act=act+"ID("+ID+")";
+                    act=act+"FF("+textFF.getText()+")";
+                    act=act+"P("+comboPrioridad.getItemAt(comboPrioridad.getSelectedIndex())+")";
+                    act=act+"Tmax("+textTMAX.getText()+")";
+                    act=act+"Tuse("+texTUSE.getText()+")";
+                    act=act+"%("+textPorcentaje.getText()+")";
+                    act=act+"CBP("+textCBP.getText()+")";
+                    act=act+"PBP("+comboPBP.getItemAt(comboPBP.getSelectedIndex())+")";
+                    
+                    String rbp = comboRBP.getItemAt(comboRBP.getSelectedIndex());
+                    if(rbp.equals("Recurrente")){
+                        rbp="YES";
+                    }else{
+                        rbp="NO";
+                    }
+                    act=act+"RBP("+rbp+")";
+                    
+                    act=act+"ACT("+textNameAct.getText()+")";
+                    act=act+"STAT("+stat+")";
+                    
+                
+                //Mandar a modificar la actividad//
+                Principal.DataControll.modActual_Act(act,textPadreID.getText());
+                System.out.println("Valor Final al Modificar:"+act);
+                this.dispose();
+            }
         }else{
-            //Continuar con la Edicion
-            
-            //Comprobar si es una actividad o un Nodo
-            if(isAct){
-                //Evaluar todos los elementos a agregar en la actividad
-                boolean correcto=true;
-                    //Evaluar el nombre
-                    if(Cad.isNulloVacia(textNameAct.getText())){
-                        correcto=false;
-                        textMensaje.setText("Nombre de actividad vacio");
-                    }
-
-                    //Evaluar la fecha
-                    if(time.AlgoritmsT.validarFecha(textFF.getText())==false){
-                        correcto=false;
-                        textMensaje.setText("Fecha FF no valida, verificarla");
-                    }
-
-                    //Evaluar el Tmax
-                    if(Cad.aEntero(textTMAX.getText(),-1)<0){
-                        correcto=false;
-                        textMensaje.setText("Tiempo Maximo debe ser mayor igual a 0");
-                    }
-
-                    //Evaluar el Tuse
-                    if(Cad.aEntero(texTUSE.getText(),-1)<0){
-                        correcto=false;
-                        textMensaje.setText("Tiempo Uso debe ser mayor igual a 0");
-                    }
-
-                    //Evaluar porcentaje de avance
-                    int porcent = Cad.aEntero(textPorcentaje.getText(),-1);
-                    if(Nums.Range(porcent,0,100)==false){
-                        correcto=false;
-                        textMensaje.setText("Porcentaje fuera de rango de 0 a 100");
-                    }
-
-                    //Evaluar el CBP
-                    if(Cad.aEntero(textCBP.getText(),-1)<0){
-                        correcto=false;
-                        textMensaje.setText("Cantidad de BP debe ser mayor o igual a 0");
-                    }
-
-
-                //Si todo esta correcto, entonces guardar los cambios
-                if(correcto){
-                    //Construir la actividad
-                    String arbol=Cad.subCadCadACadB(Act,"A(",")");
-                    String ID=Cad.subCadCadACadB(Act,"ID(",")");;
-                    String stat=Cad.subCadCadACadB(Act, "STAT(",")");
-
-                    String act="A("+arbol+")";
-                        act=act+"ID("+ID+")";
-                        act=act+"FF("+textFF.getText()+")";
-                        act=act+"P("+comboPrioridad.getItemAt(comboPrioridad.getSelectedIndex())+")";
-                        act=act+"Tmax("+textTMAX.getText()+")";
-                        act=act+"Tuse("+texTUSE.getText()+")";
-                        act=act+"%("+textPorcentaje.getText()+")";
-                        act=act+"CBP("+textCBP.getText()+")";
-                        act=act+"PBP("+comboPBP.getItemAt(comboPBP.getSelectedIndex())+")";
-
-                        String rbp = comboRBP.getItemAt(comboRBP.getSelectedIndex());
-                        if(rbp.equals("Recurrente")){
-                            rbp="YES";
-                        }else{
-                            rbp="NO";
-                        }
-                        act=act+"RBP("+rbp+")";
-
-                        act=act+"ACT("+textNameAct.getText()+")";
-                        act=act+"STAT("+stat+")";
-
-
-                    //Mandar a modificar la actividad//
-                    Principal.DataControll.modActual_Act(act,textPadreID.getText());
-                    System.out.println("Valor Final al Modificar:"+act);
-                    this.dispose();
+            //Evaluar todos los elementos para modificar nodo
+            boolean correcto=true;
+                //Evaluar el nombre
+                if(Cad.isNulloVacia(textNameAct.getText())){
+                    correcto=false;
+                    textMensaje.setText("Nombre de actividad vacio");
                 }
-            }else{
-                //Evaluar todos los elementos para modificar nodo
-                boolean correcto=true;
-                    //Evaluar el nombre
-                    if(Cad.isNulloVacia(textNameAct.getText())){
-                        correcto=false;
-                        textMensaje.setText("Nombre de actividad vacio");
-                    }
 
-                    //Evaluar porcentaje de avance
-                    int porcent = Cad.aEntero(textPorcentaje.getText(),-1);
-                    if(Nums.Range(porcent,0,100)==false){
-                        correcto=false;
-                        textMensaje.setText("Porcentaje fuera de rango de 0 a 100");
-                    }
-
-
-                //Si todo esta correcto, entonces guardar los cambios
-                if(correcto){
-                    //Construir la actividad
-                    String arbol=Cad.subCadCadACadB(Act,"A(",")");
-                    String ID=Cad.subCadCadACadB(Act,"ID(",")");;
-
-                    String node="A("+arbol+")";
-                        node=node+"ID("+ID+")";
-                        node=node+"%("+textPorcentaje.getText()+")";
-                        node=node+"ACT("+textNameAct.getText()+")";
-
-
-                    //Mandar a modificar el nodo//
-                    Principal.DataControll.modActual_Nodo(node,textPadreID.getText());
-
-
-                    System.out.println("Valor Final al Modificar:"+node);
-                    this.dispose();
+                //Evaluar porcentaje de avance
+                int porcent = Cad.aEntero(textPorcentaje.getText(),-1);
+                if(Nums.Range(porcent,0,100)==false){
+                    correcto=false;
+                    textMensaje.setText("Porcentaje fuera de rango de 0 a 100");
                 }
+
+
+            //Si todo esta correcto, entonces guardar los cambios
+            if(correcto){
+                //Construir la actividad
+                String arbol=Cad.subCadCadACadB(Act,"A(",")");
+                String ID=Cad.subCadCadACadB(Act,"ID(",")");;
+                        
+                String node="A("+arbol+")";
+                    node=node+"ID("+ID+")";
+                    node=node+"%("+textPorcentaje.getText()+")";
+                    node=node+"ACT("+textNameAct.getText()+")";
+                    
+                
+                //Mandar a modificar el nodo//
+                Principal.DataControll.modActual_Nodo(node,textPadreID.getText());
+                
+                
+                System.out.println("Valor Final al Modificar:"+node);
+                this.dispose();
             }
         }
+        
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        //Eliminar elemento por ID
-        String ID = Cad.subCadCadACadB(Act, "ID(",")");
-        
-        //comprobar si se trata de la raiz de un arbol o un nodo
-        if(Principal.DataControll.AllHistory[Principal.DataControll.sizeHistory-1].isRaiz_byID(ID)){
-            //Eliminar el arbol por completo
-            String IDarbol = Cad.subCadCadACadB(Act,"A(",")");
-            Principal.DataControll.eliminaActual_Arbol(IDarbol);
-            
-            //Pedir un Reload del Trablero
-            Principal.MenuP.MenuTablero.Cargar_ComboAreas();
-            Principal.MenuP.MenuTablero.Reload();
-        }else{
-            //Eliminar como elemento del arbol
-            Principal.DataControll.deleteActualNode_byID(ID);
-        
-            //Comprobar si se elimino correctamente
-            if(Principal.DataControll.getActualNode_byID(ID)==null){
-                String mensaje="El nodo se elimino correctamente";
-                System.out.println(mensaje);
-                textMensaje.setText(mensaje);
-                actDeleted=true;
-            }else{
-                String mensaje="Ocurrio un problema al eliminar el nodo";
-                System.out.println(mensaje);
-                textMensaje.setText(mensaje);
-            }
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -507,20 +469,21 @@ public class Editor_Actividades extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Editor_Actividades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Agregador_Actividades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Editor_Actividades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Agregador_Actividades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Editor_Actividades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Agregador_Actividades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Editor_Actividades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Agregador_Actividades.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Editor_Actividades().setVisible(true);
+                new Agregador_Actividades().setVisible(true);
             }
         });
     }
@@ -529,12 +492,13 @@ public class Editor_Actividades extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> comboPBP;
     private javax.swing.JComboBox<String> comboPrioridad;
     private javax.swing.JComboBox<String> comboRBP;
+    private javax.swing.JComboBox<String> comboType;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JFormattedTextField jFormattedTextField1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

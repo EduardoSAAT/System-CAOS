@@ -123,7 +123,9 @@ public class Editor_Areas extends javax.swing.JFrame {
             //Comprobar que ID no Exista
             if(Principal.DataControll.posActual_ArbolID(textAgregarArea.getText()) == -1){
                 //Entonces no se encontro registro como este en el arbol y se puede agregar
-                Principal.DataControll.crearActual_Arbol(textAgregarArea.getText());
+                Principal.numNodos=Principal.numNodos+1;
+                String newArbol = "ID("+Principal.numNodos+")"+"A("+textAgregarArea.getText()+")"+"%(0)";
+                Principal.DataControll.crearActual_Arbol(newArbol);
                 
                 //Reload del Tablero General
                 Principal.MenuP.MenuTablero.Cargar_ComboAreas();

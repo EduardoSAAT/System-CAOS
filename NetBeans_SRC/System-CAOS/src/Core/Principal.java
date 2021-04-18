@@ -23,7 +23,7 @@ public class Principal {
     public static String rutaHistory = "History/";
     public static String nameHistoryFiles="History_";
     public static int numHistory=0;
-    public static int numActivity=0;
+    public static int numNodos=0;
     public static boolean PeriodoActivo=false;
     
     //Variables del controlador de Datos
@@ -110,10 +110,10 @@ public class Principal {
             line = Cad.subCadCadACadB(line,"(",")");
             numHistory = Cad.aEntero(line,-1);
             
-            //Cargar el numero de Arctividad Actual
-            line = archivo.getLineLike("#Actividad#(#)#","#");
+            //Cargar el contador de Nodos
+            line = archivo.getLineLike("#Nodos#(#)#","#");
             line = Cad.subCadCadACadB(line,"(",")");
-            numActivity = Cad.aEntero(line,-1);
+            numNodos = Cad.aEntero(line,-1);
             
             //Cargar el periodo//
             line = archivo.getLineLike("#Periodo#(#)#","#");
@@ -125,7 +125,7 @@ public class Principal {
             }
             
             //Comprobar proceso//
-            if (numHistory != -1  &&  numActivity != -1){
+            if (numHistory != -1  &&  numNodos != -1){
                 salida=true;
             }else{
                 ErrorController.addError("Error en Cargar configuracion, lineas de config no encontradas");
