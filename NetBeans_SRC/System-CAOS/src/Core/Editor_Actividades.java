@@ -133,7 +133,7 @@ public class Editor_Actividades extends javax.swing.JFrame {
                 String name=Cad.subCadCadACadB(actividad,"ACT(",")");  
                 String porcent=Cad.subCadCadACadB(actividad,"%(",")");
                 String PadreID=Principal.DataControll.getActual_PadreID_byHijoID(ID);
-
+                
 
                 //Construir la ventana
                 textNameAct.setText(name);
@@ -383,6 +383,24 @@ public class Editor_Actividades extends javax.swing.JFrame {
                         correcto=false;
                         textMensaje.setText("Cantidad de BP debe ser mayor o igual a 0");
                     }
+                    
+                    //Evaluar el ID del padre, si existe o si es el mismo que el de la actividad
+                    String ubicacionPadre = Principal.DataControll.getActual_Registro().getUbicacionNode_byID(textPadreID.getText());
+                    if(Cad.isNulloVacia(ubicacionPadre)){
+                        correcto=false;
+                        textMensaje.setText("Ubicacion del padre no encontrada");
+                    }
+                    //Evaluar si el ID del padre es el mismo que el ID de esta actividad
+                        String ID_este = Cad.subCadCadACadB(Act,"ID(",")");
+                        String ID_padre = Principal.DataControll.getActualNode_byID(textPadreID.getText());
+                               ID_padre = Cad.subCadCadACadB(ID_padre,"ID(",")");
+                               
+                        if(ID_este.equals(ID_padre)){
+                            correcto=false;
+                            String mensaje="Error en Editor de actividades, el ID del padre es el mismo que el de la actividad";
+                            System.out.println(mensaje);
+                            textMensaje.setText(mensaje);
+                        }
 
 
                 //Si todo esta correcto, entonces guardar los cambios
@@ -434,6 +452,24 @@ public class Editor_Actividades extends javax.swing.JFrame {
                         correcto=false;
                         textMensaje.setText("Porcentaje fuera de rango de 0 a 100");
                     }
+                    
+                    //Evaluar el ID del padre, si existe o si es el mismo que el de la actividad
+                    String ubicacionPadre = Principal.DataControll.getActual_Registro().getUbicacionNode_byID(textPadreID.getText());
+                    if(Cad.isNulloVacia(ubicacionPadre)){
+                        correcto=false;
+                        textMensaje.setText("Ubicacion del padre no encontrada");
+                    }
+                    //Evaluar si el ID del padre es el mismo que el ID de esta actividad
+                        String ID_este = Cad.subCadCadACadB(Act,"ID(",")");
+                        String ID_padre = Principal.DataControll.getActualNode_byID(textPadreID.getText());
+                               ID_padre = Cad.subCadCadACadB(ID_padre,"ID(",")");
+                               
+                        if(ID_este.equals(ID_padre)){
+                            correcto=false;
+                            String mensaje="Error en Editor de actividades, el ID del padre es el mismo que el de la actividad";
+                            System.out.println(mensaje);
+                            textMensaje.setText(mensaje);
+                        }
 
 
                 //Si todo esta correcto, entonces guardar los cambios
@@ -468,6 +504,12 @@ public class Editor_Actividades extends javax.swing.JFrame {
             //Eliminar el arbol por completo
             String IDarbol = Cad.subCadCadACadB(Act,"A(",")");
             Principal.DataControll.eliminaActual_Arbol(IDarbol);
+            
+            //Mostrar resultados
+            String mensaje="El nodo se elimino correctamente";
+                System.out.println(mensaje);
+                textMensaje.setText(mensaje);
+                actDeleted=true;
             
             //Pedir un Reload del Trablero
             Principal.MenuP.MenuTablero.Cargar_ComboAreas();

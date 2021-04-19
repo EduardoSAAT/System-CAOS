@@ -157,7 +157,7 @@ public class Registro implements Serializable{
     
     /**
      * Descripcion: Cargar las diferentes areas de trabajo que se encuentren en el Registro
-     *
+     *  Solo sus nombre, su ID
      */
     public void Cargar_AreasWork(){
     //Variables Locales e Inicializacion//
@@ -242,7 +242,14 @@ public class Registro implements Serializable{
     boolean condiciones=true;
 	String motivo="Indeterminado";
     //Comprobar Condiciones Iniciales//
-    //no hay condiciones Iniciales
+    if(Cad.isNulloVacia(newNode)){
+        condiciones=false;
+        motivo="Nevo nodo null o vacio";
+    }
+    if(Cad.isNulloVacia(position)){
+        condiciones=false;
+        motivo="Posicion null o vacia";
+    }
 	//Comenzar Proceso//
         if(condiciones==true){
             //Obtener los datos de la posicion
@@ -294,12 +301,20 @@ public class Registro implements Serializable{
 	//Comenzar Proceso//
         if(condiciones==true){
             //Modificar el Arbol
-            arboles[posArbol].IdArbol = newName;
-            arboles[posArbol].remplazeNode("R", newName);
+                //Modificar el ID del arbol
+                    arboles[posArbol].IdArbol = newName;
+                //Modificar el registro RAIZ
+                String parametrosOLD = arboles[posArbol].getElement("R","ERROR: inter ejecucion de funcion");
+                String newValue = Cad.remplazarSubcad_CadACadB(parametrosOLD,"ACT(",")",newName);
+                arboles[posArbol].remplazeNode("R", newValue);
             
             //Recargar Variables
             Cargar_AreasWork();
-            reloadActALL_Area(newName);
+            refreshParam_Area(newName);
+            
+            //Mostrar como queda el arbol al final
+            System.out.println("ARBOL con paramatro A() refresh");
+            arboles[posArbol].showTree();
         }else{
             System.out.println("ERROR en EditaName_Arbol, motivo: "+motivo);
 	}
@@ -489,11 +504,11 @@ public class Registro implements Serializable{
     
     
     /**
-     * Descripcion: Actualizar el nombre del Arbol a que pertenece cada actividad
+     * Descripcion: Actualizar el parametro A() de cada elemento de un arbol especifico
      *
      * @param nameIDArbol Nombre del ID del Arbol a actualizar actividades
      */
-    public void reloadActALL_Area(String nameIDArbol){
+    public void refreshParam_Area(String nameIDArbol){
     //Variables Locales e Inicializacion//
     boolean condiciones=true;
 	String motivo="Indeterminado";
@@ -515,24 +530,60 @@ public class Registro implements Serializable{
             //Crear el nuevo arboly modificarlo
             TreeString arbolTemp = arboles[posArbol].Clone();
             String rutaElement=null;
-            do {    
-                //Buscar cualquier elemento que tenga Actividades, para ser modificado
-                rutaElement = arbolTemp.getRutaElementLike("#A("+nameIDArbol+")#", "#");
+            
+            //Obtener todos los elementos ramas y modificarlos
+                VectorString ALLelements = arbolTemp.getRamasAll();
                 
-                if(rutaElement!=null){
-                    //Obtener el Valor del Elemento a modificar//
-                    String value = arbolTemp.getElement(rutaElement, "ERROR en getElemento");
-                    
-                    //Modificar el Elemento//
-                    String newValor = Cad.remplazarSubcad_CadACadB(value,"A(",")",nameIDArbol);
-                    
-                    //Guardar el elemento modificado//
-                    arbolTemp.remplazeNode(rutaElement, newValor);
+                //Obtener todos los path de los elementos para despues saber donde iban
+                VectorString ALLpaths = new VectorString(ALLelements.Longitud());
+                String pathTemp="";
+                for(int i=0; i<ALLelements.Longitud(); i++){
+                    pathTemp = arbolTemp.getRuta(ALLelements.getValue(i,"ERROR inter operation"));
+                    ALLpaths.addVauleRigth(pathTemp);
                 }
-            } while (rutaElement!=null);
+                
+                //Modifica el parametro A() de todos los elementos
+                String element;
+                for(int i=0; i<ALLelements.Longitud(); i++){
+                    element=ALLelements.getValue(i,"ERROR inter operacion reloadActALL_Area");
+                    element=Cad.remplazarSubcad_CadACadB(element,"A(",")",nameIDArbol);
+                    ALLelements.setVaule(i, element);
+                }
+                
+                //Enviar todos los elementos de regreso al arbol ya modificados
+                for(int i=0; i<ALLelements.Longitud(); i++){
+                    arbolTemp.remplazeNode(ALLpaths.getValue(i,"ERROR...."),ALLelements.getValue(i,"ERROR ...."));
+                }
+                
+                
+                
+            //Obtener todos los elementos Hijas y modificarlos
+                ALLelements = arbolTemp.getHojasAll();
+                
+                //Obtener todos los path de los elementos para despues saber donde iban
+                ALLpaths = new VectorString(ALLelements.Longitud());
+                pathTemp="";
+                for(int i=0; i<ALLelements.Longitud(); i++){
+                    pathTemp = arbolTemp.getRuta(ALLelements.getValue(i,"ERROR inter operation"));
+                    ALLpaths.addVauleRigth(pathTemp);
+                }
+                
+                //Modifica el parametro A() de todos los elementos
+                for(int i=0; i<ALLelements.Longitud(); i++){
+                    element=ALLelements.getValue(i,"ERROR inter operacion reloadActALL_Area");
+                    element=Cad.remplazarSubcad_CadACadB(element,"A(",")",nameIDArbol);
+                    ALLelements.setVaule(i, element);
+                }
+                
+                //Enviar todos los elementos de regreso al arbol ya modificados
+                for(int i=0; i<ALLelements.Longitud(); i++){
+                    arbolTemp.remplazeNode(ALLpaths.getValue(i,"ERROR...."),ALLelements.getValue(i,"ERROR ...."));
+                }
+            
             
             //Enviar el nuevo arbol en la posicion del anterior
             arboles[posArbol] = arbolTemp.Clone();
+            Cargar_Actividades();
         }else{
             System.out.println("ERROR en reloadActALL_Area, motivo: "+motivo);
 	}

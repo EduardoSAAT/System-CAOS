@@ -244,7 +244,8 @@ public class Tablero extends javax.swing.JFrame {
             VectorString temp = Principal.DataControll.getActual_AreasWork();
             
             for(int i=0; i<temp.Longitud(); i++){
-                comboAreas.addItem(temp.getValue(i,"ERROR en cargarCombo"));
+                //Obtener solo el nombre del Area
+                comboAreas.addItem(temp.getValue(i,"ERROR en cargar combo"));
             }
         }else{
             System.out.println("ERROR en Cargar_ComboAreas, motivo: "+motivo);
@@ -596,19 +597,35 @@ public class Tablero extends javax.swing.JFrame {
         } catch (Exception e) {
         }
         
-        //Obtener ID del elemento
+        
+        //Ver si se pudo obtener elemento
+        if(Cad.isNulloVacia(elemento)==false){
+            //Obtener ID del elemento
             String ID = Cad.subCadCadACadB(elemento, "ID(",")");
                 //Obtener el nodo por su ID
                 String act = Principal.DataControll.getActualNode_byID(ID);
-                
+                //Obtener la ubicacion del nodo
+                String ubicacion =Principal.DataControll.getActual_Registro().getUbicacionNode_byID(ID);
+                String path_ubication=Cad.subCadCadACadB(ubicacion,"POS(", ")");
             
-            //Abrir el menu de edicion, si ID fue exitoso
-            if(Cad.isNulloVacia(ID)==false){
-                ActEditor = new Editor_Actividades(act);
-                ActEditor.setVisible(true);
+            //Comprobar si se trata de algun nodo Raiz, para mandar mensaje de error
+            if(path_ubication.equals("R")){
+                //Mandar mensaje
+                String mensaje="No se puede editar el nodo RAIZ, intente en: Editor de Arboles";
+                Principal.ErrorController.addError(mensaje);
+                Principal.ErrorController.showError();
             }else{
-                textActNameAct.setText("Alerta: No se puede editar, seleccione actividad primero");
-            }
+                //Abrir el menu de edicion, si ID fue exitoso
+                if(Cad.isNulloVacia(ID)==false){
+                    ActEditor = new Editor_Actividades(act);
+                    ActEditor.setVisible(true);
+                }else{
+                    String mensaje="Alerta: No se puede editar, seleccione actividad primero";
+                    Principal.ErrorController.addError(mensaje);
+                    Principal.ErrorController.showError();
+                }
+            } 
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed

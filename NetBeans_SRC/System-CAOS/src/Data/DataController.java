@@ -59,6 +59,7 @@ public class DataController {
     
     /**
      * Descripcion: Obtener los valores de las areas de trabajo del registro Actual
+     *  Con todos los parametros
      *
      * @return	VectorString, null en caso de error
      */
@@ -124,6 +125,82 @@ public class DataController {
             salida = AllHistory[sizeHistory-1].getArbolLigth(nameArbol);
 	}else{
             System.out.println("ERROR en getActual_ArbolLigth, motivo: "+motivo+", valor regresado: "+salida);
+	}
+    //Terminar Proceso//
+        return salida;
+    }
+    
+    
+    
+     /**
+     * Descripcion: Obtener el Arbol completo indicado del Registro Actual
+     *
+     * @return	TreeString o null
+     */
+    public TreeString getActual_Arbol (String nameArbol){
+    //Variables Locales e Inicializacion//
+        boolean condiciones=true;
+	String motivo="Indeterminado";
+        TreeString salida=null;
+    //Comprobar Condiciones Iniciales//
+    if(sizeHistory<=0){
+        condiciones=false;
+        motivo="sizeHistory == 0";
+    }else{
+        if(AllHistory==null){
+            condiciones=false;
+            motivo="No hay Registros de Historial";
+        }else{
+            if(AllHistory[sizeHistory-1]==null){
+                condiciones=false;
+                motivo="Posicion en vector History no valida";
+            }
+        }
+    }
+	//Comenzar Proceso//
+        if(condiciones==true){
+            int posArbol = AllHistory[sizeHistory-1].pos_ArbolID(nameArbol);
+            salida = AllHistory[sizeHistory-1].arboles[posArbol];
+	}else{
+            System.out.println("ERROR en getActual_Arbol , motivo: "+motivo+", valor regresado: "+salida);
+	}
+    //Terminar Proceso//
+        return salida;
+    }
+    
+    
+    
+    
+     /**
+     * Descripcion: Obtener el Registro actual
+     *
+     * @return	TreeString o null
+     */
+    public Registro getActual_Registro (){
+    //Variables Locales e Inicializacion//
+        boolean condiciones=true;
+	String motivo="Indeterminado";
+        Registro salida=null;
+    //Comprobar Condiciones Iniciales//
+    if(sizeHistory<=0){
+        condiciones=false;
+        motivo="sizeHistory == 0";
+    }else{
+        if(AllHistory==null){
+            condiciones=false;
+            motivo="No hay Registros de Historial";
+        }else{
+            if(AllHistory[sizeHistory-1]==null){
+                condiciones=false;
+                motivo="Posicion en vector History no valida";
+            }
+        }
+    }
+	//Comenzar Proceso//
+        if(condiciones==true){
+            salida = AllHistory[sizeHistory-1];
+	}else{
+            System.out.println("ERROR en getActual_Registro , motivo: "+motivo+", valor regresado: "+salida);
 	}
     //Terminar Proceso//
         return salida;
@@ -233,9 +310,12 @@ public class DataController {
     
     /**
      * Descripcion: Crear un Arbol en el Registro Actual
+     *  ID va a ser el nombre del arbol
+     *  RAIZ es el nodo completo con todos sus parametros
      *
+     *  @param Elemento Raiz con todos sus parametros
      */
-    public void crearActual_Arbol(String nameArbol){
+    public void crearActual_Arbol(String element){
     //Variables Locales e Inicializacion//
     boolean condiciones=true;
 	String motivo="Indeterminado";
@@ -244,7 +324,8 @@ public class DataController {
 	//Comenzar Proceso//
         if(condiciones==true){
             //Pedir al registro actual que cree un nuevo Arbol
-            AllHistory[sizeHistory-1].Crear_Arbol(nameArbol, nameArbol);
+            String id = Cad.subCadCadACadB(element,"ACT(",")");
+            AllHistory[sizeHistory-1].Crear_Arbol(id, element);
         }else{
             System.out.println("ERROR en crearActual_Arbol, motivo: "+motivo);
 	}

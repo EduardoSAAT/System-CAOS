@@ -124,7 +124,7 @@ public class Editor_Areas extends javax.swing.JFrame {
             if(Principal.DataControll.posActual_ArbolID(textAgregarArea.getText()) == -1){
                 //Entonces no se encontro registro como este en el arbol y se puede agregar
                 Principal.numNodos=Principal.numNodos+1;
-                String newArbol = "ID("+Principal.numNodos+")"+"A("+textAgregarArea.getText()+")"+"%(0)";
+                String newArbol = "A("+textAgregarArea.getText()+")"+"ID("+Principal.numNodos+")"+"%(0)"+"ACT("+textAgregarArea.getText()+")";
                 Principal.DataControll.crearActual_Arbol(newArbol);
                 
                 //Reload del Tablero General
@@ -140,7 +140,7 @@ public class Editor_Areas extends javax.swing.JFrame {
     }//GEN-LAST:event_botonAgregarAreaActionPerformed
 
     private void botonCambiarAreaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCambiarAreaActionPerformed
-        if(Cad.isNulloVacia(textCambiarArea.getText())==false || textCambiarArea.getText().equals("Cambiar texto aqui!")==false){
+        if((Cad.isNulloVacia(textCambiarArea.getText())==false) && (textCambiarArea.getText().equals("Cambiar texto aqui!")==false)){
             //Modificar el Registro
             String oldName = Principal.MenuP.MenuTablero.comboAreas.getItemAt(Principal.MenuP.MenuTablero.comboAreas.getSelectedIndex());
             String newName = textCambiarArea.getText();
