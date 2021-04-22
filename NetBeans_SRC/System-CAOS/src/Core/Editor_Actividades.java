@@ -384,7 +384,7 @@ public class Editor_Actividades extends javax.swing.JFrame {
                         textMensaje.setText("Cantidad de BP debe ser mayor o igual a 0");
                     }
                     
-                    //Evaluar el ID del padre, si existe o si es el mismo que el de la actividad
+                    //Evaluar el ID del padre, si existe o si es el mismo que el de la actividad, o si no es un ancestro
                     String ubicacionPadre = Principal.DataControll.getActual_Registro().getUbicacionNode_byID(textPadreID.getText());
                     if(Cad.isNulloVacia(ubicacionPadre)){
                         correcto=false;
@@ -401,6 +401,7 @@ public class Editor_Actividades extends javax.swing.JFrame {
                             System.out.println(mensaje);
                             textMensaje.setText(mensaje);
                         }
+                       
 
 
                 //Si todo esta correcto, entonces guardar los cambios
@@ -469,6 +470,26 @@ public class Editor_Actividades extends javax.swing.JFrame {
                             String mensaje="Error en Editor de actividades, el ID del padre es el mismo que el de la actividad";
                             System.out.println(mensaje);
                             textMensaje.setText(mensaje);
+                        }
+                        
+                    //Evaluar si el ID del padre no es un hijo de este nodo, (no se puede hacer un hijo de su hijo)
+                        //Obtener la ruta del ID padre
+                        String pathPadre = Cad.subCadCadACadB(ubicacionPadre,"POS(",")");
+                        String arbolPadre = Cad.subCadCadACadB(ubicacionPadre,"A(",")");
+                        //Obtener la ruta del ID actual
+                        String ubicacionActual = Principal.DataControll.getActual_Registro().getUbicacionNode_byID(ID_este);
+                        String pathActual = Cad.subCadCadACadB(ubicacionActual,"POS(",")");
+                        String arbolActual = Cad.subCadCadACadB(ubicacionActual,"A(",")");
+                        
+                        //Si son del mismo arbol hacer esa evaluacion
+                        if(Cad.Equals(arbolPadre,arbolActual,false)){
+                            int posArbol = Principal.DataControll.posActual_ArbolID(arbolActual);
+                            
+                            //si el hijo es un ancestro del padre entonces mandar un mensaje de alerta
+                            if(Principal.DataControll.getActual_Registro().arboles[posArbol].isAncestro_byPaths(pathActual,pathPadre)){
+                                correcto=false;
+                                textMensaje.setText("ERROR un nodo padre no se puede convertir en hijo de sus hijos");
+                            }
                         }
 
 

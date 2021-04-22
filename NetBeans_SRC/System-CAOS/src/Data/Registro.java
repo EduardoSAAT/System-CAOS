@@ -214,6 +214,7 @@ public class Registro implements Serializable{
             arboles[pos_ArbolID(arbol)].addSon(path, newAct);
             
             //Recargar la lista de actividades
+            refreshParam_Area(arbol);
             Cargar_Actividades();
         }else{
             System.out.println("ERROR en ModifyActivity, motivo: "+motivo);
@@ -244,7 +245,7 @@ public class Registro implements Serializable{
     //Comprobar Condiciones Iniciales//
     if(Cad.isNulloVacia(newNode)){
         condiciones=false;
-        motivo="Nevo nodo null o vacio";
+        motivo="Nuevo nodo null o vacio";
     }
     if(Cad.isNulloVacia(position)){
         condiciones=false;
@@ -252,23 +253,42 @@ public class Registro implements Serializable{
     }
 	//Comenzar Proceso//
         if(condiciones==true){
-            //Obtener los datos de la posicion
+            //Obtener los datos de la posicion nueva
             String arbol = Cad.subCadCadACadB(position,"A(",")");
             String path =Cad.subCadCadACadB(position,"POS(",")");
             
             //Obtener la ubicacion anterior del nodo
             String ID = Cad.subCadCadACadB(newNode,"ID(",")");
-            String pathOld = arboles[pos_ArbolID(arbol)].getRutaElementLike("#ID("+ID+")#","#");
-            
-            //Modificar datos anteriores del Node
-            arboles[pos_ArbolID(arbol)].remplazeNode(pathOld,newNode);
+            String old_pos = getUbicacionNode_byID(ID);
+            String pathOld = Cad.subCadCadACadB(old_pos,"POS(",")");
+            String arbol_old= Cad.subCadCadACadB(old_pos,"A(",")");
                     
-            //Mover nodo en otra posicion si es necesario
-            if(Cad.Equals(pathOld,path,false)==false){
-                arboles[pos_ArbolID(arbol)].MoverNodeTo(pathOld,path);
+            //Modificar datos anteriores del Node
+            arboles[pos_ArbolID(arbol_old)].remplazeNode(pathOld,newNode);
+                    
+            //Mover los datos, dependiendo si es en el mismo arbol o en diferentes arboles
+            if(Cad.Equals(arbol,arbol_old,false)){
+                //Entonces es el mismo arbol
+                //Mover nodo en otra posicion si es necesario
+                if(Cad.Equals(pathOld,path,false)==false){
+                    arboles[pos_ArbolID(arbol)].MoverNodeTo(pathOld,path);
+                }
+            }else{
+                //Entonces son diferentes arboles
+                
+                //Sacar el nodo
+                DataStructure.Nodo nodo = arboles[pos_ArbolID(arbol_old)].getNodo(pathOld,true);
+                
+                //Eliminar el nodo viejo
+                arboles[pos_ArbolID(arbol_old)].deleteNodo(pathOld);
+                
+                //Insertar el nodo en el nuevo arbol
+                arboles[pos_ArbolID(arbol)].addSon(path, nodo);
             }
             
+            
             //Recargar la lista de actividades
+            refreshParam_Area(arbol);
             Cargar_Actividades();
         }else{
             System.out.println("ERROR en ModifyNodo, motivo: "+motivo);

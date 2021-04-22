@@ -636,7 +636,13 @@ public class DataController {
 	//Comenzar Proceso//
         if(condiciones==true){
             String position = AllHistory[sizeHistory-1].getUbicacionNode_byID(padreID);
-            AllHistory[sizeHistory-1].ModifyNodo(newNodo, position);
+            
+            if(Cad.isNulloVacia(position)){
+                condiciones=false;
+                motivo="No se encontro ubicacion de ID:"+padreID;
+            }else{
+                AllHistory[sizeHistory-1].ModifyNodo(newNodo, position);
+            }
         }else{
             System.out.println("ERROR en modActual_Nodo, motivo: "+motivo);
 	}
@@ -644,7 +650,7 @@ public class DataController {
     	if(condiciones==true){
     		System.out.println("Proceso modActual_Nodo Terminado con EXITO");
     	}else{
-    		System.out.println("Proceso modActual_Nodo Terminado con FALLO");
+    		System.out.println("Proceso modActual_Nodo Terminado con FALLO"+motivo);
     	}
     }
     
