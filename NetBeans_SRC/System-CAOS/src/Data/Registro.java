@@ -272,6 +272,9 @@ public class Registro implements Serializable{
                 //Mover nodo en otra posicion si es necesario
                 if(Cad.Equals(pathOld,path,false)==false){
                     arboles[pos_ArbolID(arbol)].MoverNodeTo(pathOld,path);
+                    
+                    //convertir el padre en un paquete
+                    convertToNode_byUbication(position);
                 }
             }else{
                 //Entonces son diferentes arboles
@@ -284,6 +287,9 @@ public class Registro implements Serializable{
                 
                 //Insertar el nodo en el nuevo arbol
                 arboles[pos_ArbolID(arbol)].addSon(path, nodo);
+                
+                //convertir el padre en un paquete
+                convertToNode_byUbication(position);
             }
             
             
@@ -349,12 +355,12 @@ public class Registro implements Serializable{
     
     
     /**
-     * Descripcion: Agregar una nueva actividad
+     * Descripcion: Agregar una nuevo elemento al arbol, convirtiendo su padre en un nodo
      *      Aqui se incrementa automaticamnte el contador de nodos, ID
-     * @param newActivity Nueva Actividad
+     * @param newElement Nuevo elemento a agregar
      * @param padreID ID del nuevo padre de esta actividad
      */
-    public void addActivity(String newActivity, String padreID){
+    public void addElement(String newElement, String padreID){
     //Variables Locales e Inicializacion//
     boolean condiciones=true;
 	String motivo="Indeterminado";
@@ -372,10 +378,16 @@ public class Registro implements Serializable{
             
             //Aumentar el contador de Nodos//
             Principal.numNodos=Principal.numNodos+1;
-            newActivity = Cad.remplazarSubcad_CadACadB(newActivity,"ID(",")",Nums.aCadena(Principal.numNodos));
+            newElement = Cad.remplazarSubcad_CadACadB(newElement,"ID(",")",Nums.aCadena(Principal.numNodos));
             
-            //Meter la nueva actividad
-            arboles[pos_ArbolID(arbol)].addSon(newActivity, path);
+            //Meter el nuevo elemento
+            arboles[pos_ArbolID(arbol)].addSon(path,newElement);
+            
+            //Convertir el Padre en un nodo (paquete)
+            convertToNode_byUbication(padre);
+            
+            //Mandar a recargar las actividades
+            Cargar_Actividades();
         }else{
             System.out.println("ERROR en addActivity, motivo: "+motivo);
 	}
@@ -437,6 +449,118 @@ public class Registro implements Serializable{
             System.out.println("Proceso Elimina_Arbol Terminado con EXITO");
     	}else{
             System.out.println("Proceso Elimina_Arbol Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+     /**
+     * Descripcion: convertir un elemento a nodo basado en su ubicacion
+     *
+     * @param ubication con parametros A(arbol) POS(posicion path)
+     */
+    public void convertToNode_byUbication(String ubication){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+    if(Cad.isNulloVacia(ubication)){
+        condiciones=false;
+        motivo="Ubicacion is null o vacio";
+    }
+	//Comenzar Proceso//
+        if(condiciones==true){
+            String arbol = Cad.subCadCadACadB(ubication,"A(",")");
+            String path = Cad.subCadCadACadB(ubication,"POS(",")");
+            
+            String elemento = arboles[pos_ArbolID(arbol)].getElement(path,null);
+            
+            //Obtener los elementos claves
+            String A=Cad.subCadCadACadB(elemento,"A(",")");
+            String ID = Cad.subCadCadACadB(elemento,"ID(",")");
+            String Porcent = Cad.subCadCadACadB(elemento,"%(", ")");
+            String ACT = Cad.subCadCadACadB(elemento,"ACT(", ")");
+            
+            //Construir nuevo elemento
+            String newElement = "A("+A+")";
+                newElement = newElement+"ID("+ID+")";
+                newElement = newElement+"%("+Porcent+")";
+                newElement = newElement+"ACT("+ACT+")";
+                
+            //Enviar el nuevo elemento al path
+            arboles[pos_ArbolID(arbol)].remplazeNode(path, newElement);
+            
+            
+            //Recalcular el porcentaje de los padres (paquetes)
+            refreshPorcent_byUbication(ubication);
+        }else{
+            System.out.println("ERROR en convertToNode_byUbication, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso convertToNode_byUbication Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso convertToNode_byUbication Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+    
+     /**
+     * Descripcion: Recalcular el porcentaje de este nodo y los padres de esta nodo
+     *
+     * @param ubication con parametros A(arbol) POS(posicion path)
+     */
+    public void refreshPorcent_byUbication(String ubication){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+    if(Cad.isNulloVacia(ubication)){
+        condiciones=false;
+        motivo="Ubicacion is null o vacio";
+    }
+	//Comenzar Proceso//
+        if(condiciones==true){
+            String arbol = Cad.subCadCadACadB(ubication,"A(",")");
+            String path = Cad.subCadCadACadB(ubication,"POS(",")");
+            String elemento = arboles[pos_ArbolID(arbol)].getElement(path,null);
+            
+            //Obtener los hijos del elemento
+            VectorString hijos = arboles[pos_ArbolID(arbol)].getHijos(path);
+                
+                //Calcular la suma de todos los porcentajes
+                int suma = 0;
+                String temp ="";
+                for(int i=0; i<hijos.Longitud(); i++){
+                    temp=Cad.subCadCadACadB(hijos.getValue(i,null),"%(",")");
+                    suma = suma+Cad.aEntero(temp,0);
+                }
+                
+                //Calcular el porcentaje equivalente
+                int porcentaje = Nums.relaxPorcentaje(100*hijos.Longitud(),suma);
+            
+            //Cambiar el valor del porcentaje a este elemento
+            String newElemento = Cad.remplazarSubcad_CadACadB(elemento,"%(",")",Nums.aCadena(porcentaje));
+            arboles[pos_ArbolID(arbol)].remplazeNode(path, newElemento);
+            
+            //Hacer recursion con sus padres
+            String padrePath = arboles[pos_ArbolID(arbol)].getPadreRuta(path,null);
+            String ubicacionPadre = "A("+arbol+")"+"POS("+padrePath+")";
+            
+                //Hasta que ya no tenga padre porque es la raiz
+                if(Cad.isNulloVacia(padrePath)==false){
+                    refreshPorcent_byUbication(ubicacionPadre);
+                }
+        }else{
+            System.out.println("ERROR en convertToNode_byUbication, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso convertToNode_byUbication Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso convertToNode_byUbication Terminado con FALLO");
     	}
     }
     
@@ -868,7 +992,6 @@ public class Registro implements Serializable{
             String subID="";
             for(int i=0; i<size; i++){
                 line=Actividades.getValue(i,null);
-                
                 subID = Cad.subCadCadACadB(line,"ID(",")");
                 if(Cad.Equals(subID,ID,false)){
                     //Encontramos la actividad

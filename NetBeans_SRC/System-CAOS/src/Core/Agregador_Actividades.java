@@ -13,8 +13,8 @@ import Algoritms.Nums;
  * @author Ing Lalux
  */
 public class Agregador_Actividades extends javax.swing.JFrame {
-    public String Act;
-    boolean isAct=false;
+    public String Arbol;
+    boolean isAct=true;
     
     
     /**
@@ -22,6 +22,16 @@ public class Agregador_Actividades extends javax.swing.JFrame {
      */
     public Agregador_Actividades() {
         initComponents();
+    }
+    
+    
+    /**
+     * Creates new form Editor_Actividades
+     * @param   arbol Arbol en el cual se va a agregar actividad
+     */
+    public Agregador_Actividades(String arbol) {
+        initComponents();
+        Arbol=arbol;
     }
     
     
@@ -56,100 +66,50 @@ public class Agregador_Actividades extends javax.swing.JFrame {
 
     
     
-    
     /**
-     * Descripcion: Construir un editor de actividad con la actividad a editar
+     * Descripcion: Recargar menu dependiendo si se trata de una actividad o un nodo
      *
-     * @param	actividad a editar
      */
-    public Agregador_Actividades(String actividad){
+    public void Reload_Menu(){
     //Variables Locales e Inicializacion//
-        boolean condiciones=true;
+    boolean condiciones=true;
 	String motivo="Indeterminado";
     //Comprobar Condiciones Iniciales//
-	//no hay condiciones Iniciales
+		//no hay condiciones Iniciales
 	//Comenzar Proceso//
         if(condiciones==true){
-            initComponents();
-            Act=actividad;
-            
-            //Comprobar si se trata de una actividad o de un nodo
-            isAct = isActividad(Act);
             if(isAct){
-                System.out.println("Modificando Actividad:"+Act);
-                
-                //Obtener los parametros de la actividad
-                String ID = Cad.subCadCadACadB(actividad,"ID(",")");
-                String name=Cad.subCadCadACadB(actividad,"ACT(",")");
-                String FF=Cad.subCadCadACadB(actividad,"FF(",")");
-                String Prioridad=Cad.subCadCadACadB(actividad,"P(",")");
-                    if(Cad.Equals(Prioridad,"ALTA",true)){
-                        comboPrioridad.setSelectedIndex(0);
-                    }
-                    if(Cad.Equals(Prioridad,"MEDIA",true)){
-                        comboPrioridad.setSelectedIndex(1);
-                    }
-                    if(Cad.Equals(Prioridad,"BAJA",true)){
-                        comboPrioridad.setSelectedIndex(2);
-                    }
-                String Tmax=Cad.subCadCadACadB(actividad,"Tmax(",")");
-                String Tuse=Cad.subCadCadACadB(actividad,"Tuse(",")");    
-                String porcent=Cad.subCadCadACadB(actividad,"%(",")");
-                String CBP=Cad.subCadCadACadB(actividad,"CBP(",")");
-                String PBP=Cad.subCadCadACadB(actividad,"PBP(",")");
-                    if(Cad.Equals(PBP,"CORTO",true)){
-                        comboPBP.setSelectedIndex(0);
-                    }
-                    if(Cad.Equals(PBP,"MEDIANO",true)){
-                        comboPBP.setSelectedIndex(1);
-                    }
-                    if(Cad.Equals(PBP,"LARGO",true)){
-                        comboPBP.setSelectedIndex(2);
-                    }
-                String RBP=Cad.subCadCadACadB(actividad,"RBP(",")");
-                    if(Cad.Equals(RBP,"YES",true)){
-                        comboRBP.setSelectedIndex(0);
-                    }
-                    if(Cad.Equals(RBP,"NO",true)){
-                        comboRBP.setSelectedIndex(1);
-                    }
-                String PadreID=Principal.DataControll.getActual_PadreID_byHijoID(ID);
-
-
-                //Construir la ventana
-                textNameAct.setText(name);
-                textFF.setText(FF);
-                textTMAX.setText(Tmax);
-                texTUSE.setText(Tuse);
-                textPorcentaje.setText(porcent);
-                textCBP.setText(CBP);
-                textPadreID.setText(PadreID);
+                textFF.setEnabled(true);
+                comboPrioridad.setEnabled(true);
+                textTMAX.setEnabled(true);
+                texTUSE.setEnabled(true);
+                textPorcentaje.setEnabled(true);
+                textCBP.setEnabled(true);
+                comboPBP.setEnabled(true);
+                comboRBP.setEnabled(true);
             }else{
-                System.out.println("Modificando Nodo:"+Act);
-                
-                //Obtener los parametros del nodo
-                String ID = Cad.subCadCadACadB(actividad,"ID(",")");
-                String name=Cad.subCadCadACadB(actividad,"ACT(",")");  
-                String porcent=Cad.subCadCadACadB(actividad,"%(",")");
-                String PadreID=Principal.DataControll.getActual_PadreID_byHijoID(ID);
-
-
-                //Construir la ventana
-                textNameAct.setText(name);
+                comboPrioridad.setEnabled(false);
                 textFF.setEnabled(false);
                 textTMAX.setEnabled(false);
                 texTUSE.setEnabled(false);
-                textPorcentaje.setText(porcent);
+                textPorcentaje.setEnabled(false);
                 textCBP.setEnabled(false);
-                textPadreID.setText(PadreID);
-                comboPrioridad.setEnabled(false);
                 comboPBP.setEnabled(false);
                 comboRBP.setEnabled(false);
             }
-	}else{
-            System.out.println("ERROR en Editor_Actividades: nombreClase, motivo: "+motivo);
+        }else{
+            System.out.println("ERROR en Reload_Menu, motivo: "+motivo);
 	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+    		System.out.println("Proceso Reload_Menu Terminado con EXITO");
+    	}else{
+    		System.out.println("Proceso Reload_Menu Terminado con FALLO");
+    	}
     }
+    
+    
+    
     
     
 
@@ -229,6 +189,11 @@ public class Agregador_Actividades extends javax.swing.JFrame {
         jLabel11.setText("Hacer Hijo del Nodo con ID: ");
 
         comboType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Actividad", "Nodo" }));
+        comboType.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboTypeActionPerformed(evt);
+            }
+        });
 
         jLabel12.setText("Tipo de elemento");
 
@@ -345,6 +310,11 @@ public class Agregador_Actividades extends javax.swing.JFrame {
                     correcto=false;
                     textMensaje.setText("Nombre de actividad vacio");
                 }
+                String charsEspecials="A(,ID(,FF(,P(,Tmax(,Tuse(,%(,CBP(,PBP(,RBP(,STAT(,ACT(,),(,";
+                    if(Cad.numOfContains(textNameAct.getText().toUpperCase(),charsEspecials.toUpperCase(),",")>=1){
+                        correcto=false;
+                        textMensaje.setText("El nombre de actividad contiene caracteres especiales:"+charsEspecials);
+                    }
 
                 //Evaluar la fecha
                 if(time.AlgoritmsT.validarFecha(textFF.getText())==false){
@@ -376,14 +346,21 @@ public class Agregador_Actividades extends javax.swing.JFrame {
                     correcto=false;
                     textMensaje.setText("Cantidad de BP debe ser mayor o igual a 0");
                 }
+                
+                //Evaluar el ID del padre, si existe
+                    String ubicacionPadre = Principal.DataControll.getActual_Registro().getUbicacionNode_byID(textPadreID.getText());
+                    if(Cad.isNulloVacia(ubicacionPadre)){
+                        correcto=false;
+                        textMensaje.setText("Ubicacion del padre no encontrada");
+                    }
 
 
             //Si todo esta correcto, entonces guardar los cambios
             if(correcto){
                 //Construir la actividad
-                String arbol=Cad.subCadCadACadB(Act,"A(",")");
-                String ID=Cad.subCadCadACadB(Act,"ID(",")");;
-                String stat=Cad.subCadCadACadB(Act, "STAT(",")");
+                String arbol=Arbol;
+                String ID=Nums.aCadena(Principal.numNodos);
+                String stat="false";
                         
                 String act="A("+arbol+")";
                     act=act+"ID("+ID+")";
@@ -407,9 +384,8 @@ public class Agregador_Actividades extends javax.swing.JFrame {
                     act=act+"STAT("+stat+")";
                     
                 
-                //Mandar a modificar la actividad//
-                Principal.DataControll.modActual_Act(act,textPadreID.getText());
-                System.out.println("Valor Final al Modificar:"+act);
+                //Mandar a agregar la actividad//
+                Principal.DataControll.getActual_Registro().addElement(act,textPadreID.getText());
                 this.dispose();
             }
         }else{
@@ -420,37 +396,53 @@ public class Agregador_Actividades extends javax.swing.JFrame {
                     correcto=false;
                     textMensaje.setText("Nombre de actividad vacio");
                 }
-
-                //Evaluar porcentaje de avance
-                int porcent = Cad.aEntero(textPorcentaje.getText(),-1);
-                if(Nums.Range(porcent,0,100)==false){
-                    correcto=false;
-                    textMensaje.setText("Porcentaje fuera de rango de 0 a 100");
-                }
-
+                String charsEspecials="A(,ID(,FF(,P(,Tmax(,Tuse(,%(,CBP(,PBP(,RBP(,STAT(,ACT(,),(,";
+                    if(Cad.numOfContains(textNameAct.getText().toUpperCase(),charsEspecials.toUpperCase(),",")>=1){
+                        correcto=false;
+                        textMensaje.setText("El nombre de actividad contiene caracteres especiales:"+charsEspecials);
+                    }
+                
+                //Evaluar el ID del padre, si existe
+                    String ubicacionPadre = Principal.DataControll.getActual_Registro().getUbicacionNode_byID(textPadreID.getText());
+                    if(Cad.isNulloVacia(ubicacionPadre)){
+                        correcto=false;
+                        textMensaje.setText("Ubicacion del padre no encontrada");
+                    }
 
             //Si todo esta correcto, entonces guardar los cambios
             if(correcto){
                 //Construir la actividad
-                String arbol=Cad.subCadCadACadB(Act,"A(",")");
-                String ID=Cad.subCadCadACadB(Act,"ID(",")");;
+                String arbol=Arbol;
+                String ID=Nums.aCadena(Principal.numNodos);
                         
                 String node="A("+arbol+")";
                     node=node+"ID("+ID+")";
-                    node=node+"%("+textPorcentaje.getText()+")";
+                    node=node+"%("+0+")";
                     node=node+"ACT("+textNameAct.getText()+")";
                     
                 
-                //Mandar a modificar el nodo//
-                Principal.DataControll.modActual_Nodo(node,textPadreID.getText());
+                //Mandar a agregar el nodo//
+                Principal.DataControll.getActual_Registro().addElement(node,textPadreID.getText());
                 
-                
-                System.out.println("Valor Final al Modificar:"+node);
+                System.out.println("Valor Final al Agregar:"+node);
                 this.dispose();
             }
         }
         
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void comboTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboTypeActionPerformed
+        // Actualizar los elementos de Menu
+        String elementoSelcted = comboType.getItemAt(comboType.getSelectedIndex());
+        
+        if(Cad.Equals(elementoSelcted,"Actividad",false)){
+            isAct=true;
+            Reload_Menu();
+        }else{
+            isAct=false;
+            Reload_Menu();
+        }
+    }//GEN-LAST:event_comboTypeActionPerformed
 
     /**
      * @param args the command line arguments

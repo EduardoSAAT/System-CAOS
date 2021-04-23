@@ -141,6 +141,7 @@ public class Editor_Actividades extends javax.swing.JFrame {
                 textTMAX.setEnabled(false);
                 texTUSE.setEnabled(false);
                 textPorcentaje.setText(porcent);
+                textPorcentaje.setEnabled(false);
                 textCBP.setEnabled(false);
                 textPadreID.setText(PadreID);
                 comboPrioridad.setEnabled(false);
@@ -352,6 +353,11 @@ public class Editor_Actividades extends javax.swing.JFrame {
                         correcto=false;
                         textMensaje.setText("Nombre de actividad vacio");
                     }
+                    String charsEspecials="A(,ID(,FF(,P(,Tmax(,Tuse(,%(,CBP(,PBP(,RBP(,STAT(,ACT(,),(,";
+                    if(Cad.numOfContains(textNameAct.getText().toUpperCase(),charsEspecials.toUpperCase(),",")>=1){
+                        correcto=false;
+                        textMensaje.setText("El nombre de actividad contiene caracteres especiales:"+charsEspecials);
+                    }
 
                     //Evaluar la fecha
                     if(time.AlgoritmsT.validarFecha(textFF.getText())==false){
@@ -445,6 +451,11 @@ public class Editor_Actividades extends javax.swing.JFrame {
                     if(Cad.isNulloVacia(textNameAct.getText())){
                         correcto=false;
                         textMensaje.setText("Nombre de actividad vacio");
+                    }
+                    String charsEspecials="A(,ID(,FF(,P(,Tmax(,Tuse(,%(,CBP(,PBP(,RBP(,STAT(,ACT(,),(,";
+                    if(Cad.numOfContains(textNameAct.getText().toUpperCase(),charsEspecials.toUpperCase(),",")>=1){
+                        correcto=false;
+                        textMensaje.setText("El nombre de actividad contiene caracteres especiales:"+charsEspecials);
                     }
 
                     //Evaluar porcentaje de avance

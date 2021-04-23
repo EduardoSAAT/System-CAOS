@@ -608,6 +608,9 @@ public class DataController {
         if(condiciones==true){
             String position = AllHistory[sizeHistory-1].getUbicacionNode_byID(padreID);
             AllHistory[sizeHistory-1].ModifyActivity(newAct, position);
+            
+            //Recalcular el porcentaje del padre
+            AllHistory[sizeHistory-1].refreshPorcent_byUbication(position);
         }else{
             System.out.println("ERROR en modActual_Act, motivo: "+motivo);
 	}
@@ -653,6 +656,7 @@ public class DataController {
     		System.out.println("Proceso modActual_Nodo Terminado con FALLO"+motivo);
     	}
     }
+   
     
     
      /**

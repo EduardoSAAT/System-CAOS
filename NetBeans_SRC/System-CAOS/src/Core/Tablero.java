@@ -574,7 +574,6 @@ public class Tablero extends javax.swing.JFrame {
         if(Cad.isNulloVacia(textActID.getText())==false){
             String actID = textActID.getText();
             String actFULL = Principal.DataControll.getActual_Act_ID(actID);
-            
             Cargar_Actividad(actFULL);
         }else{
             //Si no intentar buscar por Nombre, si este esta
@@ -629,7 +628,8 @@ public class Tablero extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        ActAdder = new Agregador_Actividades();
+        String arbol = comboAreas.getItemAt(comboAreas.getSelectedIndex());
+        ActAdder = new Agregador_Actividades(arbol);
         ActAdder.setVisible(true);
     }//GEN-LAST:event_jButton5ActionPerformed
 
