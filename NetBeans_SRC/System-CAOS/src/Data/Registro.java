@@ -66,7 +66,7 @@ public class Registro implements Serializable{
             //Construir arbol
             TreeString a1 = new TreeString("Prueba","A(Prueba)ID(1)%(1)ACT(Prueba)");
             a1.addSon("R","A(Prueba)ID(2)%(50)ACT(Paquete General)");
-            a1.addSon("1H","A(Prueba)ID(3)FF(1/1/2030)P(ALTA)Tmax(60)Tuse(30)%(50)PBP(Largo)RBP(YES)CBP(100)ACT(Actividad 1)STAT(false)");
+            a1.addSon("1H","A(Prueba)ID(3)FF(1/1/2030)P(Alta)Tmax(60)Tuse(30)%(50)PBP(Largo)RBP(YES)CBP(100)ACT(Actividad 1)STAT(false)");
             arboles[0] = a1;
                 
                 System.out.println("----------- Primer Registro Creado -------------");
@@ -586,8 +586,14 @@ public class Registro implements Serializable{
                 VectorString temp = new VectorString(arboles[i].getHojasAll());
                 
                 //Pasar cada una de las actividades en temp al conjunto global
+                String element = "";
                 for(int x=0; x<temp.Longitud(); x++){
-                    Actividades.addVauleRigth(temp.getValue(x,"Error al obtener actividad"));
+                    element = temp.getValue(x,"Error al obtener actividad");
+                    
+                    //Evaluar si este es un nodo o realmente una actividad
+                    if(Cad.numOfContains(element,"FF(",false)>=1){
+                        Actividades.addVauleRigth(element);
+                    }
                 }
             }
             

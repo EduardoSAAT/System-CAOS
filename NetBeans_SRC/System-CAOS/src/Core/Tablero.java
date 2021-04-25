@@ -8,6 +8,8 @@ import Algoritms.Cad;
 import Core.Principal;
 import DataStructure.TreeString;
 import Dinamic.VectorString;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -32,6 +34,12 @@ public class Tablero extends javax.swing.JFrame {
     
     //Variables del agregador de actividades
     public Agregador_Actividades ActAdder;
+    
+    
+    //Variables del Filtro
+    public Filtro Filter;
+    public String filtro;
+        
     
     
     /**
@@ -62,6 +70,8 @@ public class Tablero extends javax.swing.JFrame {
             //Mandar a Cargar los Diferentes elementos de la Tabla
             Cargar_ComboAreas();
             Cargar_ArbolSelected();
+            Crear_Filtro("FF(false),P(false),PBP(false),RBP(false),CBP(false)");
+            Cargar_Actividades();
 	}else{
             System.out.println("ERROR en Constructor: Tablero, motivo: "+motivo);
 	}
@@ -143,6 +153,194 @@ public class Tablero extends javax.swing.JFrame {
     
     
     
+    /**
+     * Descripcion: Cargar Actividades y ordenarlas por el filtro en la tabla
+     *
+     */
+    public void Cargar_Actividades(){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Obtener la Tabla//
+            TableModel modelTabla = Tabla.getModel();
+            
+            //Borrar la tabla Anterior
+            for(int i=0; i<modelTabla.getRowCount(); i++){
+                modelTabla.setValueAt("", i, 0);
+                modelTabla.setValueAt("", i, 1);
+                modelTabla.setValueAt("", i, 2);
+                modelTabla.setValueAt("", i, 3);
+                modelTabla.setValueAt("", i, 4);
+                modelTabla.setValueAt("", i, 5);
+                modelTabla.setValueAt("", i, 6);
+                modelTabla.setValueAt("", i, 7);
+            }
+            
+            //Para todas actividades del registro actual
+            int numActividades=Principal.DataControll.getActual_Registro().Actividades.Longitud();
+            String element="";
+            String ID="";
+            String ACT="";
+            String P="";
+            String FF="";
+            String Tmax="";
+            String Tuse="";
+            int Trest=0;
+            String PBP="";
+            String RBP="";
+            String CBP="";
+            for(int posInsert=0; posInsert<numActividades; posInsert++){
+                element=Principal.DataControll.getActual_Registro().Actividades.getValue(posInsert,"ERROR inter operation....");
+            
+                ID = Cad.subCadCadACadB(element,"ID(",")");
+                ACT = Cad.subCadCadACadB(element, "ACT(",")");
+                P = Cad.subCadCadACadB(element,"P(",")");
+                FF = Cad.subCadCadACadB(element, "FF(",")");
+                Tmax = Cad.subCadCadACadB(element,"Tmax(", ")");
+                Tuse = Cad.subCadCadACadB(element,"Tuse(",")");
+                Trest= Cad.aEntero(Tmax,0)-Cad.aEntero(Tuse,0);
+                
+                PBP = Cad.subCadCadACadB(element,"PBP(",")");
+                RBP = Cad.subCadCadACadB(element,"RBP(",")");
+                CBP = Cad.subCadCadACadB(element,"CBP(",")");
+                
+                //Meter nuevo valor en la tabla
+                DefaultTableModel modeloTabla = (DefaultTableModel) Tabla.getModel();
+                modeloTabla.addRow(new Object[0]);
+                
+                modelTabla.setValueAt(ID, posInsert,0);
+                modelTabla.setValueAt(ACT, posInsert, 1);
+                modelTabla.setValueAt(Trest,posInsert,2);
+                modelTabla.setValueAt(FF,posInsert,3);
+                modelTabla.setValueAt(P,posInsert,4);
+                modelTabla.setValueAt(PBP,posInsert,5);
+                modelTabla.setValueAt(RBP,posInsert,6);
+                modelTabla.setValueAt(CBP,posInsert,7);
+            }
+        }else{
+            System.out.println("ERROR en Cargar_Actividades, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso Cargar_Actividades Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso Cargar_Actividades Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+    
+    
+    /**
+     * Descripcion: Crear el filtro en base al conjunto de parametros
+     *          Si tiene true el parametro es que es de menor a mayor
+     *          Si tiene false entonces es de mayor a menor
+     *          Y ordenar actividades al final
+     * @param FF(true),P(true),PBP(true),RBP(true),CBP(true)
+     */
+    public void Crear_Filtro(String parametros){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Comprobar si el filtro es el mismo que el anterior
+            if(Cad.Equals(filtro,parametros,false)){
+                //Entonces no reordenar
+            }else{
+                //Guardar el nuevo filtro y reordenar
+                filtro = parametros;
+                
+                
+                //Obtener los valores del filtro
+                String P = Cad.subCadCadACadB(parametros,"P(",")");
+                    boolean order_P = false;
+                    if(Cad.Equals(P, "true", false)){
+                        order_P = true;
+                    }
+
+                String FF = Cad.subCadCadACadB(parametros,"FF(",")");
+                    boolean order_FF = false;
+                    if(Cad.Equals(FF, "true", false)){
+                        order_FF = true;
+                    }   
+
+                String PBP = Cad.subCadCadACadB(parametros,"PBP(",")");
+                    boolean order_PBP = false;
+                    if(Cad.Equals(PBP, "true", false)){
+                        order_PBP = true;
+                    }  
+
+                String RBP = Cad.subCadCadACadB(parametros,"RBP(",")");
+                    boolean order_RBP = false;
+                    if(Cad.Equals(RBP, "true", false)){
+                        order_RBP = true;
+                    }
+
+                String CBP = Cad.subCadCadACadB(parametros,"CBP(",")");
+                    boolean order_CBP = false;
+                    if(Cad.Equals(CBP, "true", false)){
+                        order_CBP = true;
+                    } 
+                VectorString orden_parametros = new VectorString(Cad.aVector(parametros,","));
+
+
+                //Crear bloques de ordenamiento
+                Dinamic.VectorString.BloqueOrder bloqueFF = new VectorString.BloqueOrder("FF(",")","Fecha",order_FF);
+                
+                VectorString customPriority = new VectorString(3);
+                    customPriority.addVauleRigth("Baja");
+                    customPriority.addVauleRigth("Media");
+                    customPriority.addVauleRigth("Alta");
+                Dinamic.VectorString.BloqueOrder bloqueP  = new VectorString.BloqueOrder("P(",")","CUSTOM",customPriority,order_P);
+                
+                VectorString customPBP = new VectorString(3);
+                    customPBP.addVauleRigth("Corto");
+                    customPBP.addVauleRigth("Mediano");
+                    customPBP.addVauleRigth("Largo");
+                Dinamic.VectorString.BloqueOrder bloquePBP  = new VectorString.BloqueOrder("PBP(",")","CUSTOM",customPBP,order_PBP);
+                
+                VectorString customRBP = new VectorString(2);
+                    customRBP.addVauleRigth("YES");
+                    customRBP.addVauleRigth("NO");
+                Dinamic.VectorString.BloqueOrder bloqueRBP  = new VectorString.BloqueOrder("RBP(",")","CUSTOM",customRBP,order_RBP);
+                Dinamic.VectorString.BloqueOrder bloqueCBP  = new VectorString.BloqueOrder("CBP(",")","Numerico",order_CBP);   
+
+
+                //Crear el vector de bloques de ordenamiento en orde
+                Dinamic.VectorString.BloqueOrder[] bloques = new VectorString.BloqueOrder[5];
+                int posFF = orden_parametros.posValueLike("#FF(#", "#", false);
+                    bloques[posFF]=bloqueFF;
+                int posP  = orden_parametros.posValueLike("#P(#", "#", true);
+                    bloques[posP]=bloqueP;
+                int posPBP= orden_parametros.posValueLike("#PBP(#", "#", false);
+                    bloques[posPBP]=bloquePBP;
+                int posRBP= orden_parametros.posValueLike("#RBP(#", "#", false);
+                    bloques[posRBP]=bloqueRBP;
+                int posCBP= orden_parametros.posValueLike("#CBP(#", "#", false);
+                    bloques[posCBP]=bloqueCBP;
+
+                //Odenar las actividades al final
+                Principal.DataControll.getActual_Registro().Actividades.OrderBy_Bloques(bloques);
+            }
+        }else{
+            System.out.println("ERROR en Crear_Filtro, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso Crear_Filtro Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso Crear_Filtro Terminado con FALLO");
+    	}
+    }
+    
+    
+    
     
     /**
      * Descripcion: Recargar Todo el Tablero tomando en cuenta el Tipo de Trabajo
@@ -157,6 +355,7 @@ public class Tablero extends javax.swing.JFrame {
 	//Comenzar Proceso//
         if(condiciones==true){
             Cargar_ArbolSelected();
+            Cargar_Actividades();
         }else{
             System.out.println("ERROR en Reload, motivo: "+motivo);
 	}
@@ -278,7 +477,7 @@ public class Tablero extends javax.swing.JFrame {
         Diagram_Arbol = new javax.swing.JTree();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        Tabla = new javax.swing.JTable();
         jButton3 = new javax.swing.JButton();
         textActNameAct = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -333,20 +532,27 @@ public class Tablero extends javax.swing.JFrame {
 
         jLabel2.setText("ACTIVIDADES");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        Tabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Nombre", "Trest", "Fecha Fin", "Prioridad", "PBP", "RBP", "CBP"
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
+        jScrollPane2.setViewportView(Tabla);
+        if (Tabla.getColumnModel().getColumnCount() > 0) {
+            Tabla.getColumnModel().getColumn(0).setMaxWidth(40);
+            Tabla.getColumnModel().getColumn(1).setMinWidth(270);
+            Tabla.getColumnModel().getColumn(6).setMaxWidth(40);
+        }
 
         jButton3.setText("Filter");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         textActNameAct.setText("Name ACT");
 
@@ -633,6 +839,11 @@ public class Tablero extends javax.swing.JFrame {
         ActAdder.setVisible(true);
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        Filter = new Filtro(filtro);
+        Filter.setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -670,6 +881,7 @@ public class Tablero extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTree Diagram_Arbol;
+    private javax.swing.JTable Tabla;
     public javax.swing.JComboBox<String> comboAreas;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -698,7 +910,6 @@ public class Tablero extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;
     private javax.swing.JTextField jTextField5;
