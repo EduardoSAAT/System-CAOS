@@ -5,6 +5,7 @@
  */
 package Core;
 import Algoritms.Cad;
+import Algoritms.Nums;
 import Core.Principal;
 import DataStructure.TreeString;
 import Dinamic.VectorString;
@@ -164,20 +165,11 @@ public class Tablero extends javax.swing.JFrame {
     //Comprobar Condiciones Iniciales//
 	//Comenzar Proceso//
         if(condiciones==true){
-            //Obtener la Tabla//
-            TableModel modelTabla = Tabla.getModel();
-            
             //Borrar la tabla Anterior
-            for(int i=0; i<modelTabla.getRowCount(); i++){
-                modelTabla.setValueAt("", i, 0);
-                modelTabla.setValueAt("", i, 1);
-                modelTabla.setValueAt("", i, 2);
-                modelTabla.setValueAt("", i, 3);
-                modelTabla.setValueAt("", i, 4);
-                modelTabla.setValueAt("", i, 5);
-                modelTabla.setValueAt("", i, 6);
-                modelTabla.setValueAt("", i, 7);
-            }
+            DefaultTableModel modelTabla = (DefaultTableModel) Tabla.getModel();
+            modelTabla.setRowCount(0);
+            
+            
             
             //Para todas actividades del registro actual
             int numActividades=Principal.DataControll.getActual_Registro().Actividades.Longitud();
@@ -192,6 +184,7 @@ public class Tablero extends javax.swing.JFrame {
             String PBP="";
             String RBP="";
             String CBP="";
+            String state="";
             for(int posInsert=0; posInsert<numActividades; posInsert++){
                 element=Principal.DataControll.getActual_Registro().Actividades.getValue(posInsert,"ERROR inter operation....");
             
@@ -206,6 +199,7 @@ public class Tablero extends javax.swing.JFrame {
                 PBP = Cad.subCadCadACadB(element,"PBP(",")");
                 RBP = Cad.subCadCadACadB(element,"RBP(",")");
                 CBP = Cad.subCadCadACadB(element,"CBP(",")");
+                state = Cad.subCadCadACadB(element,"STAT(",")");
                 
                 //Meter nuevo valor en la tabla
                 DefaultTableModel modeloTabla = (DefaultTableModel) Tabla.getModel();
@@ -219,6 +213,13 @@ public class Tablero extends javax.swing.JFrame {
                 modelTabla.setValueAt(PBP,posInsert,5);
                 modelTabla.setValueAt(RBP,posInsert,6);
                 modelTabla.setValueAt(CBP,posInsert,7);
+                
+                //Comprobar si el estado de esta actividad es activo
+                if(state.equalsIgnoreCase("false")){
+                    modelTabla.setValueAt(false,posInsert,8);
+                }else{
+                    modelTabla.setValueAt(true,posInsert,8);
+                }
             }
         }else{
             System.out.println("ERROR en Cargar_Actividades, motivo: "+motivo);
@@ -500,10 +501,10 @@ public class Tablero extends javax.swing.JFrame {
         jScrollPane5 = new javax.swing.JScrollPane();
         jTextArea3 = new javax.swing.JTextArea();
         jLabel8 = new javax.swing.JLabel();
-        jProgressBar1 = new javax.swing.JProgressBar();
-        jTextField5 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
-        jTextField7 = new javax.swing.JTextField();
+        barSemana = new javax.swing.JProgressBar();
+        textTimeFree = new javax.swing.JTextField();
+        textTimeOcupado = new javax.swing.JTextField();
+        textTimeRest = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -537,14 +538,23 @@ public class Tablero extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Nombre", "Trest", "Fecha Fin", "Prioridad", "PBP", "RBP", "CBP"
+                "ID", "Nombre", "Trest", "Fecha Fin", "Prioridad", "PBP", "RBP", "CBP", "OK"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jScrollPane2.setViewportView(Tabla);
         if (Tabla.getColumnModel().getColumnCount() > 0) {
             Tabla.getColumnModel().getColumn(0).setMaxWidth(40);
             Tabla.getColumnModel().getColumn(1).setMinWidth(270);
             Tabla.getColumnModel().getColumn(6).setMaxWidth(40);
+            Tabla.getColumnModel().getColumn(8).setMaxWidth(50);
         }
 
         jButton3.setText("Filter");
@@ -609,6 +619,10 @@ public class Tablero extends javax.swing.JFrame {
 
         jLabel8.setText("CREAR SEMANA");
 
+        textTimeOcupado.setEditable(false);
+
+        textTimeRest.setEditable(false);
+
         jLabel9.setText("Tiempo Libre");
 
         jLabel10.setText("Tiempo Ocupado");
@@ -616,8 +630,18 @@ public class Tablero extends javax.swing.JFrame {
         jLabel11.setText("Tiempo Restante");
 
         jButton7.setText("OK");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         jButton8.setText("Check");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -682,7 +706,7 @@ public class Tablero extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel8)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(barSemana, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(0, 30, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -693,9 +717,9 @@ public class Tablero extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jButton7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
-                                    .addComponent(jTextField5)
-                                    .addComponent(jTextField6)
-                                    .addComponent(jTextField7))))))
+                                    .addComponent(textTimeFree)
+                                    .addComponent(textTimeOcupado)
+                                    .addComponent(textTimeRest))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -741,18 +765,18 @@ public class Tablero extends javax.swing.JFrame {
                     .addComponent(jScrollPane4)
                     .addComponent(jScrollPane5)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(barSemana, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textTimeFree, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel9))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textTimeOcupado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel10))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textTimeRest, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel11))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -844,6 +868,41 @@ public class Tablero extends javax.swing.JFrame {
         Filter.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        //Obtener el tiempo restante de las actividades seleccionadas y sumarlo
+            //Obtener la Tabla//
+            TableModel modelTabla = Tabla.getModel();
+            
+            //Para todas las filas de la tabla comprobar si estan en activo
+            boolean state;
+            int tRest_total=0;
+            for(int fila=0; fila<modelTabla.getRowCount(); fila++){
+                //Obtener el valor del estado
+                state = (boolean) modelTabla.getValueAt(fila,8);
+                
+                //si el estado es activo entonces obtener el tiempo restante
+                if(state==true){
+                    int temp = (int) modelTabla.getValueAt(fila,2);
+                    tRest_total=tRest_total+temp;
+                }
+            }
+        
+        //Calcular el tiempo ocupado por todas las actividades
+        textTimeOcupado.setText(Nums.aCadena(tRest_total));
+        
+        //Calcular el tiempo restante del sistema
+        int TRest = Cad.aEntero(textTimeFree.getText(),0)-tRest_total;
+        textTimeRest.setText(Nums.aCadena(TRest));
+        
+        //Cargar la barra de avance
+        barSemana.setMaximum(Cad.aEntero(textTimeFree.getText(),0));
+        barSemana.setValue(tRest_total);
+    }//GEN-LAST:event_jButton8ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -882,6 +941,7 @@ public class Tablero extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTree Diagram_Arbol;
     private javax.swing.JTable Tabla;
+    private javax.swing.JProgressBar barSemana;
     public javax.swing.JComboBox<String> comboAreas;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -904,7 +964,6 @@ public class Tablero extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -912,13 +971,13 @@ public class Tablero extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField textActID;
     private javax.swing.JTextField textActNameAct;
     private javax.swing.JTextField textActTag;
     private javax.swing.JTextField textActVarChar;
     private javax.swing.JTextArea textActividad;
+    private javax.swing.JTextField textTimeFree;
+    private javax.swing.JTextField textTimeOcupado;
+    private javax.swing.JTextField textTimeRest;
     // End of variables declaration//GEN-END:variables
 }

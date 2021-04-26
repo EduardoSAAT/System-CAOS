@@ -152,8 +152,18 @@ public class Filtro extends javax.swing.JFrame {
         });
 
         botonDOWN.setText("DOWN");
+        botonDOWN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonDOWNActionPerformed(evt);
+            }
+        });
 
         botonOK.setText("OK");
+        botonOK.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonOKActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -219,6 +229,56 @@ public class Filtro extends javax.swing.JFrame {
            modeloTabla.setValueAt(state,posSelected-1,1);
         }
     }//GEN-LAST:event_botonUPActionPerformed
+
+    private void botonDOWNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonDOWNActionPerformed
+        //Obtener la tabla
+        DefaultTableModel modeloTabla = (DefaultTableModel) Tabla.getModel();
+
+        //Obtener el elemento seleccionado
+        int posSelected = Tabla.getSelectedRow();
+        String param = (String) modeloTabla.getValueAt(posSelected,0);
+        boolean state = (boolean) modeloTabla.getValueAt(posSelected,1);
+        
+        //Obtener el elemento de abajo, si se puede
+        String paramDOWN = "";
+        boolean stateDOWN = false;
+        if(posSelected==modeloTabla.getRowCount()-1){
+            //No se puede bajar y se queda como esta
+        }else{
+           paramDOWN = (String) modeloTabla.getValueAt(posSelected+1,0);
+           stateDOWN = (boolean) modeloTabla.getValueAt(posSelected+1,1); 
+           
+           
+           //Intercambiar los elementos
+           modeloTabla.setValueAt(paramDOWN,posSelected,0);
+           modeloTabla.setValueAt(stateDOWN,posSelected,1);
+           
+           modeloTabla.setValueAt(param,posSelected+1,0);
+           modeloTabla.setValueAt(state,posSelected+1,1);
+        }
+    }//GEN-LAST:event_botonDOWNActionPerformed
+
+    private void botonOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonOKActionPerformed
+        //Obtener la tabla
+        DefaultTableModel modeloTabla = (DefaultTableModel) Tabla.getModel();
+        
+        //Recorrer todas las filas de la tabla
+        String temp="";
+        for(int i=0; i<modeloTabla.getRowCount(); i++){
+            //Tomar los elementos de la fila
+            String param = (String) modeloTabla.getValueAt(i,0);
+            boolean state = (boolean) modeloTabla.getValueAt(i,1);
+            
+            //Enviar esos parametros al filtro
+            temp=temp+param+"("+state+"),";
+        }
+        
+        //Enviar este nuevo filtro al Tablero para Recargar valores
+        Principal.MenuP.MenuTablero.Crear_Filtro(temp);
+        Principal.MenuP.MenuTablero.Reload();
+        
+        this.dispose();
+    }//GEN-LAST:event_botonOKActionPerformed
 
     /**
      * @param args the command line arguments
