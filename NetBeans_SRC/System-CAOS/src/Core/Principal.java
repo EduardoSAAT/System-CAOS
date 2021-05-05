@@ -123,6 +123,7 @@ public class Principal {
             }else{
                 PeriodoActivo=false;
             }
+            System.out.println("Tipo de Periodo encontrado: "+PeriodoActivo);
             
             //Comprobar proceso//
             if (numHistory != -1  &&  numNodos != -1){

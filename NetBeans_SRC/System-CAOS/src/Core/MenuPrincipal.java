@@ -46,6 +46,22 @@ public class MenuPrincipal extends javax.swing.JFrame {
             botonReport.setEnabled(false);
         }
     }
+    
+    
+    /**
+     * Recargar los datos del 
+     */
+    public void Reload() {
+        if(Principal.PeriodoActivo==true){
+            botonCrear.setEnabled(false);
+            botonReport.setEnabled(true);
+        }else{
+            botonReport.setEnabled(false);
+            botonCrear.setEnabled(true);
+        }
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -73,6 +89,11 @@ public class MenuPrincipal extends javax.swing.JFrame {
         });
 
         botonReport.setText("Report Bloque Trabajo");
+        botonReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonReportActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -113,6 +134,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
         MenuTablero.setVisible(true);
         
     }//GEN-LAST:event_botonCrearActionPerformed
+
+    private void botonReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonReportActionPerformed
+        //Crear el nuevo tablero
+        MenuTablero = new Tablero(Principal.PeriodoActivo);
+        MenuTablero.setVisible(true);
+    }//GEN-LAST:event_botonReportActionPerformed
 
     /**
      * @param args the command line arguments

@@ -7,7 +7,7 @@ Nodos(3)
 # Contador del Ultimo Archivo de History
 # Si el valor es 0, se crea un nuevo archivo de History por default
 # Ruta por default de los archivos  /History/History_1.caos
-History(1)
+History(3)
 
 
 # Periodo de Trabajo Activo

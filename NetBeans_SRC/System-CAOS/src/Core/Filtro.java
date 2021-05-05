@@ -15,7 +15,8 @@ import javax.swing.table.TableModel;
  * @author Ing Lalux
  */
 public class Filtro extends javax.swing.JFrame {
-    public String filtro;
+    public String filtroOrder;
+    public boolean showActComplete;
     
     
     /**
@@ -29,13 +30,13 @@ public class Filtro extends javax.swing.JFrame {
     /**
      * Creates el filtro con los parametros
      */
-    public Filtro(String parametros) {
+    public Filtro(String parametros, boolean showACTcomplete) {
         initComponents();
         
         //Cargar los datos en la tabla
                 //Guardar el nuevo filtro y reordenar
-                filtro = parametros;
-                
+                filtroOrder = parametros;
+                showActComplete = showACTcomplete;
                 
                 //Obtener los valores del filtro
                 String P = Cad.subCadCadACadB(parametros,"P(",")");
@@ -94,7 +95,10 @@ public class Filtro extends javax.swing.JFrame {
             
             modelTabla.setValueAt(Cad.subCadPosACadB(param,0,"("), posInsert,0);
             modelTabla.setValueAt(Activo, posInsert, 1);
-        }  
+        } 
+        
+        //CheckBox de Show Activitys completadas
+        checkCompleteACT.setSelected(showActComplete);
         
     }
     
@@ -114,6 +118,7 @@ public class Filtro extends javax.swing.JFrame {
         botonUP = new javax.swing.JButton();
         botonDOWN = new javax.swing.JButton();
         botonOK = new javax.swing.JButton();
+        checkCompleteACT = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -165,6 +170,8 @@ public class Filtro extends javax.swing.JFrame {
             }
         });
 
+        checkCompleteACT.setText("Mostrar Actividades Completadas");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -179,7 +186,8 @@ public class Filtro extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(botonDOWN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(botonOK, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(botonUP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(botonUP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(checkCompleteACT))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -196,6 +204,8 @@ public class Filtro extends javax.swing.JFrame {
                         .addComponent(botonDOWN)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(botonOK)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(checkCompleteACT)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -273,8 +283,11 @@ public class Filtro extends javax.swing.JFrame {
             temp=temp+param+"("+state+"),";
         }
         
+        //Cargar el CheckBox de Show actividades compeltas
+        showActComplete = checkCompleteACT.isSelected();
+        
         //Enviar este nuevo filtro al Tablero para Recargar valores
-        Principal.MenuP.MenuTablero.Crear_Filtro(temp);
+        Principal.MenuP.MenuTablero.Crear_Filtro(temp,showActComplete);
         Principal.MenuP.MenuTablero.Reload();
         
         this.dispose();
@@ -320,6 +333,7 @@ public class Filtro extends javax.swing.JFrame {
     private javax.swing.JButton botonDOWN;
     private javax.swing.JButton botonOK;
     private javax.swing.JButton botonUP;
+    private javax.swing.JCheckBox checkCompleteACT;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables

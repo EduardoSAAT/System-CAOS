@@ -17,6 +17,9 @@ public class Editor_Actividades extends javax.swing.JFrame {
     boolean isAct=false;
     boolean actDeleted=false;
     
+    //Tipo de Periodo     Activo(Reportar) = True  
+    boolean TypWork = false;
+    
     
     /**
      * Creates new form Editor_Actividades
@@ -63,7 +66,7 @@ public class Editor_Actividades extends javax.swing.JFrame {
      *
      * @param	actividad a editar
      */
-    public Editor_Actividades(String actividad){
+    public Editor_Actividades(String actividad, boolean TypeWork){
     //Variables Locales e Inicializacion//
         boolean condiciones=true;
 	String motivo="Indeterminado";
@@ -73,6 +76,7 @@ public class Editor_Actividades extends javax.swing.JFrame {
         if(condiciones==true){
             initComponents();
             Act=actividad;
+            TypWork = TypeWork;
             
             //Comprobar si se trata de una actividad o de un nodo
             isAct = isActividad(Act);
@@ -184,11 +188,11 @@ public class Editor_Actividades extends javax.swing.JFrame {
         comboPBP = new javax.swing.JComboBox<>();
         jLabel10 = new javax.swing.JLabel();
         comboRBP = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        botonReport = new javax.swing.JButton();
         textMensaje = new javax.swing.JTextField();
         textPadreID = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        botonElimina = new javax.swing.JButton();
 
         jFormattedTextField1.setText("jFormattedTextField1");
 
@@ -220,19 +224,19 @@ public class Editor_Actividades extends javax.swing.JFrame {
 
         comboRBP.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Recurrente", "NoRecurrente" }));
 
-        jButton1.setText("Guardar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        botonReport.setText("Guardar");
+        botonReport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                botonReportActionPerformed(evt);
             }
         });
 
         jLabel11.setText("Hacer Hijo del Nodo con ID: ");
 
-        jButton2.setText("Eliminar Elemento");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        botonElimina.setText("Eliminar Elemento");
+        botonElimina.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                botonEliminaActionPerformed(evt);
             }
         });
 
@@ -262,7 +266,7 @@ public class Editor_Actividades extends javax.swing.JFrame {
                                     .addComponent(texTUSE, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(textTMAX, javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(textFF, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(botonElimina, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -284,7 +288,7 @@ public class Editor_Actividades extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(textMensaje)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
+                        .addComponent(botonReport)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -325,10 +329,10 @@ public class Editor_Actividades extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textPadreID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11)
-                    .addComponent(jButton2))
+                    .addComponent(botonElimina))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(botonReport)
                     .addComponent(textMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -336,9 +340,12 @@ public class Editor_Actividades extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void botonReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonReportActionPerformed
         //Primero comprobar si la actividad se elimino
         if(actDeleted){
+            //Recargar la coleccion de actividades
+            Principal.DataControll.getActual_Registro().Cargar_Actividades();
+            
             //simplemente cerrar esta ventana
             this.dispose();
         }else{
@@ -438,6 +445,11 @@ public class Editor_Actividades extends javax.swing.JFrame {
                         act=act+"ACT("+textNameAct.getText()+")";
                         act=act+"STAT("+stat+")";
 
+                    
+                    //Comprobar si estamos reportando la actividad, y cambiar su state a false
+                    if(TypWork=true){
+                        act = Cad.remplazarSubcad_CadACadB(act, "STAT(", ")", "false");
+                    }
 
                     //Mandar a modificar la actividad//
                     Principal.DataControll.modActual_Act(act,textPadreID.getText());
@@ -525,44 +537,45 @@ public class Editor_Actividades extends javax.swing.JFrame {
                 }
             }
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_botonReportActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void botonEliminaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEliminaActionPerformed
+        
         //Eliminar elemento por ID
-        String ID = Cad.subCadCadACadB(Act, "ID(",")");
-        
-        //comprobar si se trata de la raiz de un arbol o un nodo
-        if(Principal.DataControll.AllHistory[Principal.DataControll.sizeHistory-1].isRaiz_byID(ID)){
-            //Eliminar el arbol por completo
-            String IDarbol = Cad.subCadCadACadB(Act,"A(",")");
-            Principal.DataControll.eliminaActual_Arbol(IDarbol);
-            
-            //Mostrar resultados
-            String mensaje="El nodo se elimino correctamente";
-                System.out.println(mensaje);
-                textMensaje.setText(mensaje);
-                actDeleted=true;
-            
-            //Pedir un Reload del Trablero
-            Principal.MenuP.MenuTablero.Cargar_ComboAreas();
-            Principal.MenuP.MenuTablero.Reload();
-        }else{
-            //Eliminar como elemento del arbol
-            Principal.DataControll.deleteActualNode_byID(ID);
-        
-            //Comprobar si se elimino correctamente
-            if(Principal.DataControll.getActualNode_byID(ID)==null){
+            String ID = Cad.subCadCadACadB(Act, "ID(",")");
+
+            //comprobar si se trata de la raiz de un arbol o un nodo
+            if(Principal.DataControll.AllHistory[Principal.DataControll.sizeHistory-1].isRaiz_byID(ID)){
+                //Eliminar el arbol por completo
+                String IDarbol = Cad.subCadCadACadB(Act,"A(",")");
+                Principal.DataControll.eliminaActual_Arbol(IDarbol);
+
+                //Mostrar resultados
                 String mensaje="El nodo se elimino correctamente";
-                System.out.println(mensaje);
-                textMensaje.setText(mensaje);
-                actDeleted=true;
+                    System.out.println(mensaje);
+                    textMensaje.setText(mensaje);
+                    actDeleted=true;
+
+                //Pedir un Reload del Trablero
+                Principal.MenuP.MenuTablero.Cargar_ComboAreas();
+                Principal.MenuP.MenuTablero.Reload();
             }else{
-                String mensaje="Ocurrio un problema al eliminar el nodo";
-                System.out.println(mensaje);
-                textMensaje.setText(mensaje);
+                //Eliminar como elemento del arbol
+                Principal.DataControll.deleteActualNode_byID(ID);
+
+                //Comprobar si se elimino correctamente
+                if(Principal.DataControll.getActualNode_byID(ID)==null){
+                    String mensaje="El nodo se elimino correctamente";
+                    System.out.println(mensaje);
+                    textMensaje.setText(mensaje);
+                    actDeleted=true;
+                }else{
+                    String mensaje="Ocurrio un problema al eliminar el nodo";
+                    System.out.println(mensaje);
+                    textMensaje.setText(mensaje);
+                }
             }
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_botonEliminaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -600,11 +613,11 @@ public class Editor_Actividades extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton botonElimina;
+    private javax.swing.JButton botonReport;
     private javax.swing.JComboBox<String> comboPBP;
     private javax.swing.JComboBox<String> comboPrioridad;
     private javax.swing.JComboBox<String> comboRBP;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JFormattedTextField jFormattedTextField1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
