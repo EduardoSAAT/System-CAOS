@@ -187,7 +187,6 @@ public class Tablero extends javax.swing.JFrame {
             
             
             //Para todas actividades del registro actual
-            int numActividades=Principal.DataControll.getActual_Registro().Actividades.Longitud();
             String element="";
             String ID="";
             String ACT="";
@@ -201,7 +200,7 @@ public class Tablero extends javax.swing.JFrame {
             String CBP="";
             String state="";
             int porcent=0;
-            for(int posInsert=0; posInsert<numActividades; posInsert++){
+            for(int posInsert=0; posInsert<Principal.DataControll.getActual_Registro().Actividades.Longitud(); posInsert++){
                 element=Principal.DataControll.getActual_Registro().Actividades.getValue(posInsert,"ERROR inter operation....");
             
                 ID = Cad.subCadCadACadB(element,"ID(",")");
@@ -609,7 +608,7 @@ public class Tablero extends javax.swing.JFrame {
         botonLocalizar = new javax.swing.JButton();
         botonReport = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("AREA");
 

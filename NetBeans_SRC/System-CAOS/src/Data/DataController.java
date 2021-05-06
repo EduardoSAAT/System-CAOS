@@ -4,6 +4,7 @@
 package Data;
 
 import Algoritms.Cad;
+import Algoritms.Nums;
 import Archivos.Binary;
 import Archivos.Text;
 import Core.Principal;
@@ -677,6 +678,282 @@ public class DataController {
             salida=AllHistory[sizeHistory-1].getAct_byID(ID);
 	}else{
             System.out.println("ERROR en getActual_Act_ID, motivo: "+motivo+", valor regresado: "+salida);
+	}
+    //Terminar Proceso//
+        return salida;
+    }
+    
+    
+    
+    
+    /**
+     * Descripcion: Exportar los Archivos de History a Archivos TXT del mismo nombre
+     *
+     */
+    public void HistoryCAOS_to_TXT(){
+    //Variables Locales e Inicializacion//
+    boolean condiciones=true;
+	String motivo="Indeterminado";
+    //Comprobar Condiciones Iniciales//
+		//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Para todos los archivos de History
+            for(int i=0; i<sizeHistory; i++){
+                //Crear el nuevo Archivo de texto
+                String nameFile = "History/History_"+(i+1)+".txt";
+                Text.CrearNewFile(nameFile);
+                Text file = new Text(nameFile);
+                
+                //Para todos los arboles del Registro, mandalos a este archivo
+                for(int x=0; x<AllHistory[i].sizeTrees; x++){
+                    String nameArbol = AllHistory[i].arboles[x].IdArbol;
+                    
+                    //Agregar las linea de separador del nombre de Arbol
+                    file.AgregarLine("INICIO("+nameArbol+")");
+                    file.AgregarLine("FIN("+nameArbol+")");
+                    int posLine = file.NumLines();
+                    
+                    //Agregar este arbol
+                    AllHistory[i].arboles[x].printTreeFileTxt(nameFile, posLine, "\t", 1);
+                }
+            }
+        }else{
+            System.out.println("ERROR en History_to_TXT, motivo: "+motivo);
+	}
+    //Terminar Proceso//
+    	if(condiciones==true){
+            System.out.println("Proceso History_to_TXT Terminado con EXITO");
+    	}else{
+            System.out.println("Proceso History_to_TXT Terminado con FALLO");
+    	}
+    }
+    
+    
+    
+    
+    
+    /**
+     * Descripcion: Convertir los archivos encontrados en History de tipo TXT en tipo CAOS
+     *
+     * @return	true exito, false fallo
+     */
+    public boolean HistoryTXT_to_CAOS(){
+    //Variables Locales e Inicializacion//
+        boolean condiciones=true;
+	String motivo="Indeterminado";
+        boolean salida=true;
+    //Comprobar Condiciones Iniciales//
+	//no hay condiciones Iniciales
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Crear un Cargador para el Proceso
+            Graphic.Loader.loadWindows7 cargador = new loadWindows7();
+            cargador.Avanzar("Iniciando Convercion de Archivos de Texto a CAOS");
+            
+            
+            //Encontrar todos los elementos tipo TXT en la carpetaHistory
+            //Primero reparar el numero de History
+            boolean exist_File = true;
+            int contadorFile = 1;
+            while (exist_File) {
+                //Construir el archivo
+                String nameFile = "History/History_"+contadorFile+".txt";
+                
+                if(Binary.FileExist(nameFile)){
+                    contadorFile=contadorFile+1;
+                    cargador.Avanzar("Archivo History encontrado:"+nameFile);
+                }else{
+                    exist_File=false;
+                }
+            }
+            contadorFile=contadorFile-1;
+            
+            
+            //Para cada Archivo Trabajar
+            for(int i=1; i<=contadorFile; i++){
+                //Abrir el Archivo txt
+                String fileNameText = "History/History_"+i+".txt";
+                Text fileText = new Text(fileNameText);
+                cargador.Avanzar("Trabajando con Archivo:"+fileNameText);
+                System.out.println("Trabajando con Archivo: "+fileNameText);
+                
+                    //Contar el numero de Arboles del Archivo de Texto
+                    int numArboles=0;
+                    for(int x=1;x<=fileText.NumLines(); x++){
+                        if(Cad.LikeA(fileText.LeerLineaN(x), "#INICIO#(#)#","#")){
+                            numArboles=numArboles+1;
+                        }
+                    }
+                    System.out.println("Numero de arboles encontrado:"+numArboles);
+                    cargador.Avanzar("Numero de arboles encontrado:"+numArboles);
+                    
+                    
+                    //Cargar los arboles a un vector de arboles
+                    TreeString[] arbolesFound = new TreeString[numArboles];
+                        for(int j=1; j<=numArboles; j++){
+                            int posInicioArbol = fileText.posLineLikeN("#INICIO#(#)#", "#", j);
+                            int posFinalArbol = fileText.posLineLikeN("#FIN#(#)#", "#", j);
+                            String nameArbol = fileText.LeerLineaN(posInicioArbol);
+                            nameArbol = Cad.subCadCadACadB(nameArbol,"(",")");
+                            TreeString arbol = new TreeString(nameArbol);
+                            arbol.createTreeFromFileTxt(posInicioArbol+1, posFinalArbol-1, "\t", fileNameText);
+                            arbol.IdArbol=nameArbol;
+                            arbolesFound[j-1]=arbol;
+                            
+                            //Mostrar el arbol cargado
+                            cargador.Avanzar("Arbol Cargado: "+nameArbol);
+                            arbol.showTree();
+                            System.out.println("\n");
+                        }
+                    
+                //Crear el Registro nuevo de CAOS
+                Registro reg = new Registro();
+                
+                    //Cargar los Datos del Registro
+                    reg.arboles = arbolesFound.clone();
+                    reg.sizeTrees = numArboles;
+                    reg.Cargar_AreasWork();
+                    reg.Cargar_Actividades();
+                    
+                    //Crear el nuevo Archivo .CAOS
+                    String nameFileBinary = "History/History_"+i+".caos";
+                    Binary.CrearNewFile(nameFileBinary);
+                    Binary binaryFile = new Binary(nameFileBinary);
+                    binaryFile.Escribir(reg);
+                    cargador.Avanzar("Creando Archivo Binario: "+nameFileBinary);
+            }
+            
+            //Finalmente actualizar el Sistema por completo por los nuevos registro
+            Repair_ConfigFile();
+	}else{
+            System.out.println("ERROR en HistoryTXT_to_CAOS, motivo: "+motivo+", valor regresado: "+salida);
+	}
+    //Terminar Proceso//
+        return salida;
+    }
+    
+    
+    
+    
+    
+     /**
+     * Descripcion: Reparar Archivo de Configuracion
+     *  Usando los archivos .caos encontrados en History
+     *
+     * @return	true Exito, false, Fallo
+     */
+    public boolean Repair_ConfigFile (){
+    //Variables Locales e Inicializacion//
+        boolean condiciones=true;
+	String motivo="Indeterminado";
+        boolean salida=true;
+    //Comprobar Condiciones Iniciales//
+    if(Binary.FileExist("History/History_"+1+".caos")==false){
+        condiciones=false;
+        motivo="No existe el archivo inicial: History/History_1.caos";
+        salida=false;
+    }
+    if(Text.FileExist(Principal.configFile)==false){
+        condiciones=false;
+        motivo="El archivo de configuracion actual no existe";
+        salida=false;
+    }
+	//Comenzar Proceso//
+        if(condiciones==true){
+            //Crear un Cargador para el Proceso
+            Graphic.Loader.loadWindows7 cargador = new loadWindows7();
+            cargador.Avanzar("Iniciando Reparacion del Archivo");
+            
+            //Abrir el actual archivo de configuracion
+            Text config = new Text(Principal.configFile);
+            
+            //Primero reparar el numero de History
+            boolean exist_File = true;
+            int contadorFile = 1;
+            while (exist_File) {
+                //Construir el archivo
+                String nameFile = "History/History_"+contadorFile+".caos";
+                
+                if(Binary.FileExist(nameFile)){
+                    contadorFile=contadorFile+1;
+                    cargador.Avanzar("Archivo History encontrado:"+nameFile);
+                }else{
+                    exist_File=false;
+                }
+            }
+            contadorFile=contadorFile-1;
+            int posLine = config.posLineLike("#History(#","#");
+            String line = config.LeerLineaN(posLine);
+            line = Cad.remplazarSubcad_CadACadB(line,"History(",")", Nums.aCadena(contadorFile));
+            config.RemplaceLineN(posLine, line);
+                cargador.Avanzar("Contador de History Reparado, Historys found:"+contadorFile);
+            
+            //Actualizar el sistema con los valores de Historys
+            Principal.numHistory = contadorFile;
+            CargarHistorys();
+            for(int i=0;i<getActual_Registro().sizeTrees; i++){
+                System.out.println("Arbol Cargado:"+getActual_Registro().arboles[i].IdArbol);
+            }
+                
+            //Reparar el Contador de Nodos, ya cargados los registros
+            cargador.Avanzar("Reparando el contador de Nodos");
+            boolean nodeExiste=true;
+            int countNode=1;
+            while (nodeExiste) {  
+                //Comprobar si existe actividad con el actual ID
+                cargador.Avanzar("Comprobando nodo: "+countNode);
+                
+                if(getActual_Registro().getNode_byID(Nums.aCadena(countNode))!=null){
+                   //Entonces existe y auemntar el contador
+                   countNode=countNode+1;
+                }else{
+                    nodeExiste=false;
+                }
+            }
+            //Disminuir el ultimo aumento extra
+            countNode=countNode-1;
+            posLine = config.posLineLike("#Nodos(#","#");
+            line = config.LeerLineaN(posLine);
+            line = Cad.remplazarSubcad_CadACadB(line,"Nodos(",")", Nums.aCadena(countNode));
+            config.RemplaceLineN(posLine, line);
+                System.out.println("Contador de Nodos Reparado, Nodos found:"+countNode);
+                cargador.Avanzar("Contador de Nodos Reparado, Nodos found:"+countNode);
+            
+            
+            
+            //Reparar el Estado del Periodo
+            cargador.Avanzar("Comprobando estado del Sistema");
+            boolean stateFinal = false;
+                //Comprobar si en algun arbol existe un nodo con estado activo
+                Registro lastReg = getActual_Registro();
+                for(int i=0; i<lastReg.sizeTrees; i++){
+                    cargador.Avanzar("Comprobando arbol: "+lastReg.arboles[i].IdArbol);
+                    
+                    String ruta = lastReg.arboles[i].getRutaElementLike("#STAT(true)#","#");
+                    //Si esta ruta existe entonces el estado es true
+                    if(Cad.isNulloVacia(ruta)==false){
+                        stateFinal=true;
+                    }
+                }
+            posLine = config.posLineLike("#Periodo(#","#");
+            line = config.LeerLineaN(posLine);
+            if(stateFinal){
+                line = Cad.remplazarSubcad_CadACadB(line,"Periodo(",")","true");
+            }else{
+                line = Cad.remplazarSubcad_CadACadB(line,"Periodo(",")","false");
+            }
+            config.RemplaceLineN(posLine, line);
+                System.out.println("Periodo del sistema reparado, Estado Final:"+stateFinal);
+                cargador.Avanzar("Periodo del sistema reparado, Estado Final:"+stateFinal);   
+            
+            
+            //Terminar el Proceso
+            cargador.Terminar();
+            Principal.Inicializar();
+            Principal.MenuP.Reload();
+	}else{
+            System.out.println("ERROR en Repair_ConfigFile, motivo: "+motivo+", valor regresado: "+salida);
 	}
     //Terminar Proceso//
         return salida;

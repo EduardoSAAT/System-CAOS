@@ -76,6 +76,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         labelImage = new javax.swing.JLabel();
         botonCrear = new javax.swing.JButton();
         botonReport = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -95,6 +96,13 @@ public class MenuPrincipal extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("Opciones");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -108,16 +116,20 @@ public class MenuPrincipal extends javax.swing.JFrame {
                             .addComponent(jLabel1)
                             .addComponent(botonCrear, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                        .addComponent(botonReport, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(botonReport, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labelImage, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
+                .addComponent(labelImage, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(botonCrear, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -130,16 +142,28 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
     private void botonCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCrearActionPerformed
         //Crear el nuevo tablero
-        MenuTablero = new Tablero(Principal.PeriodoActivo);
-        MenuTablero.setVisible(true);
-        
+        try {
+            MenuTablero = new Tablero(Principal.PeriodoActivo);
+            MenuTablero.setVisible(true);
+        } catch (Exception e) {
+            System.out.println("No se puede abrir ventana por un fallo en el Sistema");
+        }
     }//GEN-LAST:event_botonCrearActionPerformed
 
     private void botonReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonReportActionPerformed
         //Crear el nuevo tablero
-        MenuTablero = new Tablero(Principal.PeriodoActivo);
-        MenuTablero.setVisible(true);
+        try {
+            MenuTablero = new Tablero(Principal.PeriodoActivo);
+            MenuTablero.setVisible(true);  
+        } catch (Exception e) {
+            System.out.println("No se puede abrir ventana por un fallo en el Sistema");
+        }
     }//GEN-LAST:event_botonReportActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        OpcionesSystem opc = new OpcionesSystem();
+        opc.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -179,6 +203,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonCrear;
     private javax.swing.JButton botonReport;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel labelImage;
     // End of variables declaration//GEN-END:variables
