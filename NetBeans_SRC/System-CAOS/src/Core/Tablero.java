@@ -187,6 +187,7 @@ public class Tablero extends javax.swing.JFrame {
             
             
             //Para todas actividades del registro actual
+            int TotalActs= Principal.DataControll.getActual_Registro().Actividades.Longitud();
             String element="";
             String ID="";
             String ACT="";
@@ -200,8 +201,8 @@ public class Tablero extends javax.swing.JFrame {
             String CBP="";
             String state="";
             int porcent=0;
-            for(int posInsert=0; posInsert<Principal.DataControll.getActual_Registro().Actividades.Longitud(); posInsert++){
-                element=Principal.DataControll.getActual_Registro().Actividades.getValue(posInsert,"ERROR inter operation....");
+            for(int numAct=0; numAct<TotalActs; numAct++){
+                element=Principal.DataControll.getActual_Registro().Actividades.getValue(numAct,"ERROR inter operation....");
             
                 ID = Cad.subCadCadACadB(element,"ID(",")");
                 ACT = Cad.subCadCadACadB(element, "ACT(",")");
@@ -241,6 +242,7 @@ public class Tablero extends javax.swing.JFrame {
                         //Meter nuevo valor en la tabla
                         DefaultTableModel modeloTabla = (DefaultTableModel) Tabla.getModel();
                         modeloTabla.addRow(new Object[0]);
+                        int posInsert =  modeloTabla.getRowCount()-1;
 
                         modelTabla.setValueAt(ID, posInsert,0);
                         modelTabla.setValueAt(ACT, posInsert, 1);
@@ -256,7 +258,8 @@ public class Tablero extends javax.swing.JFrame {
                             modelTabla.setValueAt(false,posInsert,8);
                         }else{
                             modelTabla.setValueAt(true,posInsert,8);
-                        }
+                        } 
+                        
                     }
                 }else{
                     if(mostrar){
@@ -264,6 +267,7 @@ public class Tablero extends javax.swing.JFrame {
                         if(Cad.Equals(state,"true",true)){
                             DefaultTableModel modeloTabla = (DefaultTableModel) Tabla.getModel();
                             modeloTabla.addRow(new Object[0]);
+                            int posInsert =  modeloTabla.getRowCount()-1;
 
                             modelTabla.setValueAt(ID, posInsert,0);
                             modelTabla.setValueAt(ACT, posInsert, 1);
@@ -279,7 +283,7 @@ public class Tablero extends javax.swing.JFrame {
                                 modelTabla.setValueAt(false,posInsert,8);
                             }else{
                                 modelTabla.setValueAt(true,posInsert,8);
-                            }
+                            } 
                         }
                     }
                 }

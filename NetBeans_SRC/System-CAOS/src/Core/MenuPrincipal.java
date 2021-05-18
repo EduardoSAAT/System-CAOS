@@ -152,8 +152,9 @@ public class MenuPrincipal extends javax.swing.JFrame {
 
     private void botonReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonReportActionPerformed
         //Crear el nuevo tablero
+        MenuTablero = new Tablero(Principal.PeriodoActivo);
         try {
-            MenuTablero = new Tablero(Principal.PeriodoActivo);
+            
             MenuTablero.setVisible(true);  
         } catch (Exception e) {
             System.out.println("No se puede abrir ventana por un fallo en el Sistema");

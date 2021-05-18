@@ -896,31 +896,53 @@ public class DataController {
                 System.out.println("Arbol Cargado:"+getActual_Registro().arboles[i].IdArbol);
             }
                 
+           
+            
             //Reparar el Contador de Nodos, ya cargados los registros
             cargador.Avanzar("Reparando el contador de Nodos");
-            boolean nodeExiste=true;
-            int countNode=1;
-            while (nodeExiste) {  
-                //Comprobar si existe actividad con el actual ID
-                cargador.Avanzar("Comprobando nodo: "+countNode);
+            int ID = 0; 
+            
+            //Para el ultimo registro y para todos sus arboles
+            for(int arbol=0; arbol<getActual_Registro().sizeTrees; arbol++){
+                //Obtener todas las ramas
+                VectorString Ramas = getActual_Registro().arboles[arbol].getRamasAll();
+                    
+                    //Ver si en algun elemento hay algun ID mayor al actual
+                    for(int rama=0; rama<=Ramas.Longitud(); rama++){
+                        String ramaString = Ramas.getValue(rama,"0");
+                        ramaString = Cad.subCadCadACadB(ramaString,"ID(",")");
+                        int value = Cad.aEntero(ramaString,0);
+                        
+                        if(value>ID){
+                            ID = value;
+                        }
+                    }
                 
-                if(getActual_Registro().getNode_byID(Nums.aCadena(countNode))!=null){
-                   //Entonces existe y auemntar el contador
-                   countNode=countNode+1;
-                }else{
-                    nodeExiste=false;
-                }
+                //Obtener todas las hojas
+                VectorString Hojas = getActual_Registro().arboles[arbol].getHojasAll();
+                    
+                    //Ver si en algun elemento hay algun ID mayor al actual
+                    for(int hojas=0; hojas<=Hojas.Longitud(); hojas++){
+                        String hojaString = Hojas.getValue(hojas,"0");
+                        hojaString = Cad.subCadCadACadB(hojaString, "ID(", ")");
+                        int value = Cad.aEntero(hojaString,0);
+                        
+                        if(value>ID){
+                            ID = value;
+                        }
+                    }
             }
-            //Disminuir el ultimo aumento extra
-            countNode=countNode-1;
+            
+            //Pasar los datos del contador de nodos al file config
+            int countNode = ID;
             posLine = config.posLineLike("#Nodos(#","#");
             line = config.LeerLineaN(posLine);
             line = Cad.remplazarSubcad_CadACadB(line,"Nodos(",")", Nums.aCadena(countNode));
             config.RemplaceLineN(posLine, line);
                 System.out.println("Contador de Nodos Reparado, Nodos found:"+countNode);
                 cargador.Avanzar("Contador de Nodos Reparado, Nodos found:"+countNode);
-            
-            
+                
+                
             
             //Reparar el Estado del Periodo
             cargador.Avanzar("Comprobando estado del Sistema");
